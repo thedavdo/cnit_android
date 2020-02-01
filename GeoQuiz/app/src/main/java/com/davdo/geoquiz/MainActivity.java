@@ -1,7 +1,10 @@
 package com.davdo.geoquiz;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -18,12 +21,18 @@ public class MainActivity extends AppCompatActivity {
     private Button mSkipButton;
     private Button mBackButton;
 
+    private Button mResetButton;
+
+    AlertDialog mConfirmReset;
+
     private TextView mQuestionDisplay;
     private TextView mAnswerResult;
 
     private TextView mScoreDisplay;
 
     private boolean disableButtons = false;
+
+    private boolean disableAnswerButtons = false;
 
     private Quiz mQuizObj;
 
@@ -34,8 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
         mTrueButton = findViewById(R.id.button_true);
         mFalseButton = findViewById(R.id.button_false);
+
         mSkipButton = findViewById(R.id.button_skip);
         mBackButton = findViewById(R.id.button_back);
+
+        mResetButton = findViewById(R.id.button_reset);
 
         //mTrueButton.setBackgroundColor(Color.GREEN);
         //mFalseButton.setBackgroundColor(Color.RED);
@@ -46,14 +58,34 @@ public class MainActivity extends AppCompatActivity {
 
         mQuizObj = new Quiz();
 
+        mQuizObj.startQuiz();
+
         updateQuestionDisplay();
         updateScore();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_reset_inform)
+                .setPositiveButton(R.string.dialog_reset_confirm, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        mQuizObj.startQuiz();
+                        mQuizObj.setQuestion(0);
+                        updateQuestionDisplay();
+                        updateScore();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_reset_deny, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {}
+                });
+
+        mConfirmReset = builder.create();
 
         mTrueButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
 
                 if(disableButtons) return;
+                if(disableAnswerButtons) return;
 
                 onChoice(true);
             }
@@ -64,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 if(disableButtons) return;
+                if(disableAnswerButtons) return;
 
                 onChoice(false);
             }
@@ -78,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 mQuizObj.progressQuestion();
                 updateQuestionDisplay();
 
-                Toast.makeText(MainActivity.this, R.string.toast_skip, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, R.string.toast_skip, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -91,7 +124,15 @@ public class MainActivity extends AppCompatActivity {
                 mQuizObj.progressQuestion(true);
                 updateQuestionDisplay();
 
-                Toast.makeText(MainActivity.this, R.string.toast_back, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, R.string.toast_back, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mResetButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+                mConfirmReset.show();
             }
         });
     }
@@ -110,6 +151,32 @@ public class MainActivity extends AppCompatActivity {
         Question currentQ = mQuizObj.getCurrentQuestion();
 
         mQuestionDisplay.setText(String.format(getString(R.string.text_question), index+1, getString(currentQ.getTextResId())));
+
+        if(mQuizObj.isCurrentQuestionAnswered()) {
+
+            boolean wasCorrect = mQuizObj.getUserAnswer(mQuizObj.getQuestionIndex()) == 1;
+
+            int toastRef;
+            int answerResponseColor;
+
+            if(wasCorrect) {
+                toastRef = R.string.text_correct;
+                answerResponseColor = Color.GREEN;
+            }
+            else {
+                toastRef = R.string.text_incorrect;
+                answerResponseColor = Color.RED;
+            }
+
+            mAnswerResult.setText(toastRef);
+            mAnswerResult.setTextColor(answerResponseColor);
+
+            disableAnswerButtons = true;
+        }
+        else {
+            mAnswerResult.setText("");
+            disableAnswerButtons = false;
+        }
     }
 
     public void clearResult() {
@@ -155,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void pauseButtonInput() {
 
-        new CountDownTimer(3000, 1000) {
+        new CountDownTimer(2000, 1000) {
             public void onFinish() {
 
                 clearResult();
