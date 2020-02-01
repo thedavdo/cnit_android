@@ -4,7 +4,7 @@
     <string name="text_question">Question #%d\n%s</string>
     <string name="text_correct">You Did It!</string>
     <string name="text_incorrect">Wrong!</string>
-    <string name="text_score">Score: %d</string>
+    <string name="text_score">Score Streak: %d</string>
 
     <string name="toast_skip">Skipping Question</string>
     <string name="toast_back">Back Question</string>
@@ -13,6 +13,11 @@
     <string name="button_false">false</string>
     <string name="button_skip">skip</string>
     <string name="button_back">back</string>
+    <string name="button_reset">reset</string>
+
+    <string name="dialog_reset_inform">Are you sure?</string>
+    <string name="dialog_reset_confirm">RESET</string>
+    <string name="dialog_reset_deny">NO THANKS</string>
 
     <string name="question_australia">Canberra is the capital of Australia.</string>
     <string name="question_oceans">The Pacific Ocean is larger than the Atlantic Ocean.</string>
