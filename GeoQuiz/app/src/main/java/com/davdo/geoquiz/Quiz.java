@@ -15,7 +15,15 @@ public class Quiz {
                 new Question(R.string.question_asia, true)
     };
 
+    private int[] mUserAnswers;
+
     public Quiz() {
+        mQuestionIndex = 0;
+        mScoreValue = 0;
+    }
+
+    public void startQuiz() {
+        mUserAnswers = new int[mQuestionList.length];
         mQuestionIndex = 0;
         mScoreValue = 0;
     }
@@ -64,17 +72,35 @@ public class Quiz {
         setQuestion(mQuestionIndex);
     }
 
+    public boolean isCurrentQuestionAnswered() {
+
+        return isQuestionAnswered(mQuestionIndex);
+    }
+
+    public boolean isQuestionAnswered(int index) {
+
+        return mUserAnswers[index] != 0;
+    }
+
+    public int getUserAnswer(int index) {
+
+        return mUserAnswers[index];
+    }
+
     protected boolean selectAnswer(boolean answer) {
 
-        boolean correct = (getCurrentQuestion().getAnswer() == answer);
+        boolean correct = (getCurrentQuestion().getCorrectAnswer() == answer);
 
         if(correct) {
+            mUserAnswers[mQuestionIndex] = 1;
+
             if(mScoreValue < 0)
                 mScoreValue = 0;
             else
                 mScoreValue++;
         }
         else {
+            mUserAnswers[mQuestionIndex] = -1;
             if(mScoreValue <= 0)
                 mScoreValue--;
             else
