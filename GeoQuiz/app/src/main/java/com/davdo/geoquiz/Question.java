@@ -3,26 +3,26 @@ package com.davdo.geoquiz;
 public class Question {
 
     private int mTextResId;
-    private boolean mAnswer;
+    private boolean mCorrectAnswer;
 
     public Question(int textResId, boolean answer){
         mTextResId = textResId;
-        mAnswer = answer;
+        mCorrectAnswer = answer;
     }
 
     public int getTextResId() {
         return mTextResId;
     }
 
-    public boolean getAnswer() {
-        return mAnswer;
+    public boolean getCorrectAnswer() {
+        return mCorrectAnswer;
     }
 
     public void setTextResId(int textResId) {
         mTextResId = textResId;
     }
 
-    public void setAnswer(boolean answerTrue) {
-        mAnswer = answerTrue;
+    public void setCorrectAnswer(boolean answerTrue) {
+        mCorrectAnswer = answerTrue;
     }
 }
