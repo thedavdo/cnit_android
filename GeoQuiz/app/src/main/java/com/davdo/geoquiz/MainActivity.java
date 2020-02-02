@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView mScoreDisplay;
 
     private boolean disableButtons = false;
-
     private boolean disableAnswerButtons = false;
 
     private Quiz mQuizObj;
@@ -49,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         mResetButton = findViewById(R.id.button_reset);
 
-        //mTrueButton.setBackgroundColor(Color.GREEN);
-        //mFalseButton.setBackgroundColor(Color.RED);
-
         mQuestionDisplay = findViewById(R.id.text_view_question);
         mAnswerResult = findViewById(R.id.text_view_result);
         mScoreDisplay = findViewById(R.id.text_view_score);
@@ -61,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         mQuizObj.startQuiz();
 
         updateQuestionDisplay();
-        updateScore();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.dialog_reset_inform)
@@ -69,13 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
 
                         mQuizObj.startQuiz();
-                        mQuizObj.setQuestion(0);
                         updateQuestionDisplay();
-                        updateScore();
                     }
-                })
-                .setNegativeButton(R.string.dialog_reset_deny, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {}
                 });
 
         mConfirmReset = builder.create();
@@ -110,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
                 mQuizObj.progressQuestion();
                 updateQuestionDisplay();
-
-                //Toast.makeText(MainActivity.this, R.string.toast_skip, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -123,8 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
                 mQuizObj.progressQuestion(true);
                 updateQuestionDisplay();
-
-                //Toast.makeText(MainActivity.this, R.string.toast_back, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -143,6 +129,10 @@ public class MainActivity extends AppCompatActivity {
         displayResult(result);
 
         pauseButtonInput();
+    }
+
+    public void clearResult() {
+        mAnswerResult.setText("");
     }
 
     public void updateQuestionDisplay() {
@@ -177,10 +167,8 @@ public class MainActivity extends AppCompatActivity {
             mAnswerResult.setText("");
             disableAnswerButtons = false;
         }
-    }
 
-    public void clearResult() {
-        mAnswerResult.setText("");
+        updateScore();
     }
 
     public void updateScore() {
@@ -227,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
 
                 clearResult();
                 updateQuestionDisplay();
+
                 disableButtons = false;
             }
 
