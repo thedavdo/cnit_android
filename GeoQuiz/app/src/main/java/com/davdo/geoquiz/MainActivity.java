@@ -56,17 +56,17 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.dialog_reset_inform)
-                .setPositiveButton(R.string.dialog_reset_confirm, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+            .setPositiveButton(R.string.dialog_reset_confirm, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
 
-                        mQuizObj.startQuiz();
-                        updateQuestionDisplay();
-                    }
-                }).setNegativeButton(R.string.dialog_reset_deny, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                    mQuizObj.startQuiz();
+                    updateQuestionDisplay();
+                }
+            }).setNegativeButton(R.string.dialog_reset_deny, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
 
-                    }
-                });
+                }
+            });
 
 
         mConfirmReset = builder.create();
@@ -75,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
-                if(disableButtons) return;
-                if(disableAnswerButtons) return;
+            if(disableButtons) return;
+            if(disableAnswerButtons) return;
 
-                onChoice(true);
+            onChoice(true);
             }
         });
 
@@ -86,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
-                if(disableButtons) return;
-                if(disableAnswerButtons) return;
+            if(disableButtons) return;
+            if(disableAnswerButtons) return;
 
-                onChoice(false);
+            onChoice(false);
             }
         });
 
@@ -97,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
-                if(disableButtons) return;
+            if(disableButtons) return;
 
-                mQuizObj.progressQuestion();
-                updateQuestionDisplay();
+            mQuizObj.progressQuestion();
+            updateQuestionDisplay();
             }
         });
 
@@ -108,10 +108,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
-                if(disableButtons) return;
+            if(disableButtons) return;
 
-                mQuizObj.progressQuestion(true);
-                updateQuestionDisplay();
+            mQuizObj.progressQuestion(true);
+            updateQuestionDisplay();
             }
         });
 
@@ -280,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
 
             public void onTick(long millisUntilFinished) {}
         }.start();
-
 
 
         disableButtons = true;
