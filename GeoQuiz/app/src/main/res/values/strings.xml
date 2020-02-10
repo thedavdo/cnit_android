@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
 
+    <string name="menu_button_reset">Reset Game</string>
+
     <string name="text_question">Question #%d\n%s</string>
     <string name="text_correct">You Did It!</string>
     <string name="text_incorrect">Wrong!</string>
