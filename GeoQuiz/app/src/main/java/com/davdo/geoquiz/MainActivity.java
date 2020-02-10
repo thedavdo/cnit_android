@@ -7,19 +7,25 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+    private static final String QUIZ_INDEX = "quiz";
 
     private Button mTrueButton;
     private Button mFalseButton;
 
-    private Button mSkipButton;
-    private Button mBackButton;
-
-    private Button mResetButton;
+    private FloatingActionButton mSkipButton;
+    private FloatingActionButton mBackButton;
 
     AlertDialog mConfirmReset;
 
@@ -44,17 +50,9 @@ public class MainActivity extends AppCompatActivity {
         mSkipButton = findViewById(R.id.button_skip);
         mBackButton = findViewById(R.id.button_back);
 
-        mResetButton = findViewById(R.id.button_reset);
-
         mQuestionDisplay = findViewById(R.id.text_view_question);
         mAnswerResult = findViewById(R.id.text_view_result);
         mScoreDisplay = findViewById(R.id.text_view_score);
-
-        mQuizObj = new Quiz();
-
-        mQuizObj.startQuiz();
-
-        updateQuestionDisplay();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.dialog_reset_inform)
@@ -117,13 +115,71 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mResetButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
+        if (savedInstanceState != null){
+            mQuizObj = savedInstanceState.getParcelable(QUIZ_INDEX);
+            Log.d(TAG, "Loading Parcelable!!!");
+        }
+        else {
+            mQuizObj = new Quiz();
+            mQuizObj.startQuiz();
+        }
 
+        updateQuestionDisplay();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_main, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_button_reset:
                 mConfirmReset.show();
-            }
-        });
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+
+        savedInstanceState.putParcelable(QUIZ_INDEX, mQuizObj);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
     }
 
     public void onChoice(boolean choice) {
