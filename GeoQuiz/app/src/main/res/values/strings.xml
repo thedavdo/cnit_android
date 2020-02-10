@@ -4,7 +4,7 @@
     <string name="menu_button_reset">Reset Game</string>
 
     <string name="text_question">Question #%d\n%s</string>
-    <string name="text_correct">You Did It!</string>
+    <string name="text_correct">Correct!</string>
     <string name="text_incorrect">Wrong!</string>
     <string name="text_score">Score Streak: %d</string>
 
