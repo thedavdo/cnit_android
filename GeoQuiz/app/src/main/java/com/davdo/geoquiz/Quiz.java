@@ -1,6 +1,10 @@
 package com.davdo.geoquiz;
 
-public class Quiz {
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Quiz implements Parcelable {
 
     private int mQuestionIndex;
 
@@ -21,6 +25,27 @@ public class Quiz {
         mQuestionIndex = 0;
         mScoreValue = 0;
     }
+
+    private Quiz(Parcel in) {
+
+        mQuestionIndex = in.readInt();
+        mScoreValue = in.readInt();
+        mQuestionList = (Question[]) in.readArray((Question[].class.getClassLoader()));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+
+        out.writeInt(mQuestionIndex);
+        out.writeInt(mScoreValue);
+        out.writeArray(mQuestionList);
+    }
+
 
     public void startQuiz() {
         mUserAnswers = new int[mQuestionList.length];
@@ -111,4 +136,15 @@ public class Quiz {
 
         return correct;
     }
+
+
+    public static final Parcelable.Creator<Quiz> CREATOR = new Parcelable.Creator<Quiz>() {
+        public Quiz createFromParcel(Parcel in) {
+            return new Quiz(in);
+        }
+
+        public Quiz[] newArray(int size) {
+            return new Quiz[size];
+        }
+    };
 }
