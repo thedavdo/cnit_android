@@ -5,7 +5,7 @@ public class Question {
     private int mTextResId;
     private boolean mCorrectAnswer;
 
-    public Question(int textResId, boolean answer){
+    public Question(int textResId, boolean answer) {
         mTextResId = textResId;
         mCorrectAnswer = answer;
     }

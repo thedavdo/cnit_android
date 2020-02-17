@@ -19,7 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private static final String QUIZ_INDEX = "quiz";
+    private static final String QUIZ_INDEX = "quiz_obj";
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mSkipButton;
     private FloatingActionButton mBackButton;
 
-    AlertDialog mConfirmReset;
+    private AlertDialog mConfirmReset;
 
     private TextView mQuestionDisplay;
     private TextView mAnswerResult;
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
                     mQuizObj.startQuiz();
                     updateQuestionDisplay();
+
                 }
             }).setNegativeButton(R.string.dialog_reset_deny, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
