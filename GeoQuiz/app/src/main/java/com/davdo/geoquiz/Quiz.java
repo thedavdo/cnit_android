@@ -4,26 +4,41 @@ package com.davdo.geoquiz;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class Quiz implements Parcelable {
 
     private int mQuestionIndex;
 
     private int mScoreValue;
 
-    private Question[] mQuestionList = {
-        new Question(R.string.question_australia, true),
-                new Question(R.string.question_oceans, true),
-                new Question(R.string.question_mideast, false),
-                new Question(R.string.question_africa, false),
-                new Question(R.string.question_americas, true),
-                new Question(R.string.question_asia, true)
+    private Question[] mDefaultQuestions = {
+            new Question(R.string.question_australia, true),
+            new Question(R.string.question_oceans, true),
+            new Question(R.string.question_mideast, false),
+            new Question(R.string.question_africa, false),
+            new Question(R.string.question_americas, true),
+            new Question(R.string.question_asia, true)
     };
+
+
+    private Question[] mQuestionList = {};
 
     private int[] mUserAnswers;
 
     public Quiz() {
         mQuestionIndex = 0;
         mScoreValue = 0;
+        mQuestionList = mDefaultQuestions;
+    }
+
+    public Quiz(Question[] questionList) {
+
+        mQuestionIndex = 0;
+        mScoreValue = 0;
+        mQuestionList = questionList;
     }
 
     private Quiz(Parcel in) {
@@ -48,9 +63,23 @@ public class Quiz implements Parcelable {
 
 
     public void startQuiz() {
-        mUserAnswers = new int[mQuestionList.length];
-        mQuestionIndex = 0;
-        mScoreValue = 0;
+
+        List<Question> shuffleList = Arrays.asList(mQuestionList);
+
+        Collections.shuffle(shuffleList);
+
+        setQuestionList((Question[]) shuffleList.toArray());
+    }
+
+    public void setQuestionList(Question[] questionList) {
+
+        if(questionList.length > 0) {
+            mQuestionList = questionList;
+
+            mUserAnswers = new int[mQuestionList.length];
+            mQuestionIndex = 0;
+            mScoreValue = 0;
+        }
     }
 
     public void setQuestion(int index) {
