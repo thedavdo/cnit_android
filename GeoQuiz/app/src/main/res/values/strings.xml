@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
 
+    <string name="menu_button_cheat">Cheat</string>
     <string name="menu_button_reset">Reset Game</string>
+
+
 
     <string name="text_question">Question #%d\n%s</string>
     <string name="text_correct">Correct!</string>
@@ -17,7 +20,11 @@
     <string name="button_back">back</string>
     <string name="button_reset">reset</string>
 
-    <string name="dialog_reset_inform">Are you sure?</string>
+    <string name="dialog_cheat_inform">You really want to cheat?</string>
+    <string name="dialog_cheat_confirm">CHEAT</string>
+    <string name="dialog_cheat_deny">NO</string>
+
+    <string name="dialog_reset_inform">Do you want to reset?</string>
     <string name="dialog_reset_confirm">RESET</string>
     <string name="dialog_reset_deny">NO THANKS</string>
 
