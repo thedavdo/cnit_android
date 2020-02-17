@@ -1,9 +1,10 @@
-package com.davdo.geoquiz;
+package com.davdo.geoquiz.android;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -14,12 +15,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.davdo.geoquiz.src.Question;
+import com.davdo.geoquiz.src.Quiz;
+import com.davdo.geoquiz.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private static final String QUIZ_INDEX = "quiz_obj";
+    public static final String QUIZ_INDEX = "quiz_obj";
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -139,7 +143,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_button_reset:
                 mConfirmReset.show();
                 return true;
+            case R.id.menu_button_cheat:
+                Intent intent = new Intent(MainActivity.this, CheatActivity.class);
+                intent.putExtra(QUIZ_INDEX, mQuizObj);
+                startActivity(intent);
 
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -204,21 +213,21 @@ public class MainActivity extends AppCompatActivity {
 
         if(mQuizObj.isCurrentQuestionAnswered()) {
 
-            boolean wasCorrect = mQuizObj.getUserAnswer(mQuizObj.getQuestionIndex()) == 1;
+            boolean wasCorrect = (mQuizObj.getUserAnswer(mQuizObj.getQuestionIndex()) == 1);
 
-            int toastRef;
+            int resultID;
             int answerResponseColor;
 
             if(wasCorrect) {
-                toastRef = R.string.text_correct;
+                resultID = R.string.text_correct;
                 answerResponseColor = Color.GREEN;
             }
             else {
-                toastRef = R.string.text_incorrect;
+                resultID = R.string.text_incorrect;
                 answerResponseColor = Color.RED;
             }
 
-            mAnswerResult.setText(toastRef);
+            mAnswerResult.setText(resultID);
             mAnswerResult.setTextColor(answerResponseColor);
 
             disableAnswerButtons = true;

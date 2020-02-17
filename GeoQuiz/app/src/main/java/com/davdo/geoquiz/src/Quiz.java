@@ -1,8 +1,10 @@
-package com.davdo.geoquiz;
+package com.davdo.geoquiz.src;
 
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.davdo.geoquiz.R;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,24 +16,20 @@ public class Quiz implements Parcelable {
 
     private int mScoreValue;
 
-    private Question[] mDefaultQuestions = {
-            new Question(R.string.question_australia, true),
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true)
+    private Question[] mQuestionList = {
+        new Question(R.string.question_australia, true),
+        new Question(R.string.question_oceans, true),
+        new Question(R.string.question_mideast, false),
+        new Question(R.string.question_africa, false),
+        new Question(R.string.question_americas, true),
+        new Question(R.string.question_asia, true)
     };
-
-
-    private Question[] mQuestionList = {};
 
     private int[] mUserAnswers;
 
     public Quiz() {
         mQuestionIndex = 0;
         mScoreValue = 0;
-        mQuestionList = mDefaultQuestions;
     }
 
     public Quiz(Question[] questionList) {
@@ -45,6 +43,7 @@ public class Quiz implements Parcelable {
 
         mQuestionIndex = in.readInt();
         mScoreValue = in.readInt();
+
         mQuestionList = (Question[]) in.readArray((Question[].class.getClassLoader()));
     }
 
@@ -141,7 +140,7 @@ public class Quiz implements Parcelable {
         return mUserAnswers[index];
     }
 
-    protected boolean selectAnswer(boolean answer) {
+    public boolean selectAnswer(boolean answer) {
 
         boolean correct = (getCurrentQuestion().getCorrectAnswer() == answer);
 
