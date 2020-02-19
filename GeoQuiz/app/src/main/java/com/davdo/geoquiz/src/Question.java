@@ -8,25 +8,58 @@ public class Question implements Parcelable {
     private int mTextResId;
     private boolean mCorrectAnswer;
 
+    private int mUserAnswer;
+    private boolean mUserCheated;
+
     public Question(int textResId, boolean answer) {
         mTextResId = textResId;
         mCorrectAnswer = answer;
+        mUserAnswer = 0;
     }
 
     protected Question(Parcel in) {
         mTextResId = in.readInt();
         mCorrectAnswer = (in.readByte() != 0);
+        mUserAnswer = in.readInt();
+        mUserCheated = (in.readByte() != 0);
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mTextResId);
         dest.writeByte((byte) (mCorrectAnswer ? 1 : 0));
+        dest.writeInt(mUserAnswer);
+        dest.writeByte((byte) (mUserCheated ? 1 : 0));
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void resetAnswer() {
+        mUserAnswer = 0;
+    }
+
+    public void setUserAnswer(boolean inAnswer) {
+        mUserAnswer = inAnswer ? 1 : -1;
+    }
+
+    public boolean getUserAnswer() {
+
+        return mUserAnswer == 1;
+    }
+
+    public boolean hasUserAnswered() {
+        return (mUserAnswer != 0);
+    }
+
+    public void setUserCheated(boolean cheated) {
+        mUserCheated = cheated;
+    }
+
+    public boolean hasUserCheated() {
+        return mUserCheated;
+    }
+
+    //This will return false when the user has not answered.
+    public boolean isUserCorrect() {
+      return (mCorrectAnswer ? 1 : -1) == mUserAnswer;
     }
 
     public int getTextResId() {
@@ -43,6 +76,13 @@ public class Question implements Parcelable {
 
     public void setCorrectAnswer(boolean answerTrue) {
         mCorrectAnswer = answerTrue;
+    }
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     // --- Static Methods ---

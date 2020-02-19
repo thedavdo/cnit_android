@@ -3,6 +3,7 @@ package com.davdo.geoquiz.src;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import com.davdo.geoquiz.R;
 
@@ -21,10 +22,7 @@ public class Quiz implements Parcelable {
         new Question(R.string.question_asia, true)
     };
 
-    private int[] mUserAnswers;
-
     private int mQuestionIndex;
-
     private int mScoreValue;
 
     public Quiz() {
@@ -43,13 +41,7 @@ public class Quiz implements Parcelable {
         mScoreValue = in.readInt();
 
         in.readTypedArray(mQuestionList, Question.CREATOR);
-
-        mUserAnswers = new int[mQuestionList.length];
-
-        in.readIntArray(mUserAnswers);
     }
-
-
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
@@ -58,7 +50,6 @@ public class Quiz implements Parcelable {
         out.writeInt(mScoreValue);
 
         out.writeTypedArray(mQuestionList, 0);
-        out.writeIntArray(mUserAnswers);
     }
 
 
@@ -71,12 +62,20 @@ public class Quiz implements Parcelable {
         setQuestionList((Question[]) shuffleList.toArray());
     }
 
+    public void resetQuiz() {
+
+        startQuiz();
+
+        for(Question q : mQuestionList) {
+            q.resetAnswer();
+        }
+    }
+
     public void setQuestionList(Question[] questionList) {
 
         if(questionList.length > 0) {
             mQuestionList = questionList;
 
-            mUserAnswers = new int[mQuestionList.length];
             mQuestionIndex = 0;
             mScoreValue = 0;
         }
@@ -126,35 +125,19 @@ public class Quiz implements Parcelable {
         setQuestion(mQuestionIndex);
     }
 
-    public boolean isCurrentQuestionAnswered() {
-
-        return isQuestionAnswered(mQuestionIndex);
-    }
-
-    public boolean isQuestionAnswered(int index) {
-
-        return mUserAnswers[index] != 0;
-    }
-
-    public int getUserAnswer(int index) {
-
-        return mUserAnswers[index];
-    }
-
     public boolean selectAnswer(boolean answer) {
 
-        boolean correct = (getCurrentQuestion().getCorrectAnswer() == answer);
+        getCurrentQuestion().setUserAnswer(answer);
+
+        boolean correct = getCurrentQuestion().isUserCorrect();
 
         if(correct) {
-            mUserAnswers[mQuestionIndex] = 1;
-
             if(mScoreValue < 0)
                 mScoreValue = 0;
             else
                 mScoreValue++;
         }
         else {
-            mUserAnswers[mQuestionIndex] = -1;
             if(mScoreValue <= 0)
                 mScoreValue--;
             else
