@@ -131,20 +131,17 @@ public class Quiz implements Parcelable {
 
         boolean correct = getCurrentQuestion().isUserCorrect();
 
-        if(correct) {
-            if(mScoreValue < 0)
-                mScoreValue = 0;
-            else
-                mScoreValue++;
+        if(getCurrentQuestion().hasUserCheated()) {
+            mScoreValue = mScoreValue - 10;
         }
         else {
-            if(mScoreValue <= 0)
-                mScoreValue--;
+            if(correct)
+                mScoreValue++;
             else
-                mScoreValue = 0;
+                mScoreValue--;
         }
 
-        progressQuestion();
+        //progressQuestion();
 
         return correct;
     }
@@ -153,6 +150,8 @@ public class Quiz implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+    // --- Static Methods ---
 
     public static final Parcelable.Creator<Quiz> CREATOR = new Parcelable.Creator<Quiz>() {
         public Quiz createFromParcel(Parcel in) {

@@ -2,6 +2,10 @@ package com.davdo.geoquiz.android;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+//import androidx.navigation.NavController;
+//import androidx.navigation.Navigation;
+//import androidx.navigation.ui.AppBarConfiguration;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.davdo.geoquiz.src.Question;
 import com.davdo.geoquiz.src.Quiz;
@@ -53,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        NavigationUI.setupWithNavController(toolbar, navController);
 
         mTrueButton = findViewById(R.id.button_true);
         mFalseButton = findViewById(R.id.button_false);
@@ -221,10 +231,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Cheating is Wrong.", Toast.LENGTH_SHORT).show();
         }
 
-        boolean result = mQuizObj.selectAnswer(choice);
-        displayResult(result);
+        mQuizObj.selectAnswer(choice);
+        displayResult();
 
-        Log.d(TAG, "User Cheat Status: " + mQuizObj.getCurrentQuestion().hasUserCheated());
+        //Log.d(TAG, "User Cheat Status: " + mQuizObj.getCurrentQuestion().hasUserCheated());
 
         pauseButtonInput();
     }
@@ -240,21 +250,39 @@ public class MainActivity extends AppCompatActivity {
 
         mQuestionDisplay.setText(String.format(getString(R.string.text_question), index+1, getString(currentQ.getTextResId())));
 
+        updateAnswerDisplay();
+        updateScore();
+    }
+
+    public void updateAnswerDisplay() {
+
+        Question currentQ = mQuizObj.getCurrentQuestion();
+
         if(currentQ.hasUserAnswered()) {
 
             int resultID;
             int answerResponseColor;
 
-            if(currentQ.isUserCorrect()) {
-                resultID = R.string.text_correct;
-                answerResponseColor = Color.GREEN;
-            }
-            else {
-                resultID = R.string.text_incorrect;
+            if(currentQ.hasUserCheated()) {
+                resultID = R.string.text_cheated;
                 answerResponseColor = Color.RED;
             }
+            else {
+                if(currentQ.isUserCorrect()) {
+                    resultID = R.string.text_correct;
+                    answerResponseColor = Color.GREEN;
+                }
+                else {
+                    resultID = R.string.text_incorrect;
+                    answerResponseColor = ResourcesCompat.getColor(getResources(), R.color.base_wrong, null);
+                }
+            }
 
-            mAnswerResult.setText(resultID);
+            int correctAnswer = currentQ.getCorrectAnswer() ? R.string.button_true : R.string.button_false;
+
+            String result = String.format(getString(R.string.text_result), getString(resultID), getString(correctAnswer));
+
+            mAnswerResult.setText(result);
             mAnswerResult.setTextColor(answerResponseColor);
 
             disableAnswerButtons = true;
@@ -263,8 +291,6 @@ public class MainActivity extends AppCompatActivity {
             mAnswerResult.setText("");
             disableAnswerButtons = false;
         }
-
-        updateScore();
     }
 
     public void updateScore() {
@@ -273,8 +299,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(mQuizObj.getScore() == 0)
             colorRef = Color.BLACK;
-        else if (mQuizObj.getScore() < 0)
-            colorRef = Color.RED;
+        else if(mQuizObj.getScore() < 0)
+            colorRef = ResourcesCompat.getColor(getResources(), R.color.base_wrong, null);
         else
             colorRef = Color.GREEN;
 
@@ -282,26 +308,10 @@ public class MainActivity extends AppCompatActivity {
         mScoreDisplay.setTextColor(colorRef);
     }
 
-    public void displayResult(boolean wasCorrect) {
+    public void displayResult() {
 
-        int toastRef;
-        int answerResponseColor;
-
-        if(wasCorrect) {
-            toastRef = R.string.text_correct;
-            answerResponseColor = Color.GREEN;
-        }
-        else {
-            toastRef = R.string.text_incorrect;
-            answerResponseColor = Color.RED;
-        }
-
-        mAnswerResult.setText(toastRef);
-        mAnswerResult.setTextColor(answerResponseColor);
-
+        updateAnswerDisplay();
         updateScore();
-
-        pauseButtonInput();
     }
 
     protected void pauseButtonInput() {
@@ -309,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
         new CountDownTimer(2000, 1000) {
             public void onFinish() {
 
+                mQuizObj.progressQuestion();
                 clearResult();
                 updateQuestionDisplay();
 
@@ -317,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
 
             public void onTick(long millisUntilFinished) {}
         }.start();
-
 
         disableButtons = true;
     }

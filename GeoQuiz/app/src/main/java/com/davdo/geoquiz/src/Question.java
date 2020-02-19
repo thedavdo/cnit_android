@@ -37,12 +37,12 @@ public class Question implements Parcelable {
     }
 
     public void setUserAnswer(boolean inAnswer) {
-        mUserAnswer = inAnswer ? 1 : -1;
+        mUserAnswer = (inAnswer ? 1 : -1);
     }
 
     public boolean getUserAnswer() {
 
-        return mUserAnswer == 1;
+        return (mUserAnswer == 1);
     }
 
     public boolean hasUserAnswered() {
@@ -77,8 +77,6 @@ public class Question implements Parcelable {
     public void setCorrectAnswer(boolean answerTrue) {
         mCorrectAnswer = answerTrue;
     }
-
-
 
     @Override
     public int describeContents() {

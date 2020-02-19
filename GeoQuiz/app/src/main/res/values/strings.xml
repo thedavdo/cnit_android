@@ -1,15 +1,19 @@
 <resources>
-    <string name="app_name">GeoQuiz</string>
+    <string name="activity_label_app">GeoQuiz</string>
+    <string name="activity_label_cheat">Cheat Sheet</string>
 
     <string name="menu_button_cheat">Cheat</string>
     <string name="menu_button_reset">Reset Game</string>
 
-
-
     <string name="text_question">Question #%d\n%s</string>
-    <string name="text_correct">Correct!</string>
-    <string name="text_incorrect">Wrong!</string>
-    <string name="text_score">Score Streak: %d</string>
+
+    <string name="text_correct">Correct</string>
+    <string name="text_incorrect">Wrong</string>
+    <string name="text_cheated">Cheater</string>
+
+    <string name="text_result">%s!\nThe answer is %s.</string>
+
+    <string name="text_score">Score: %d</string>
 
     <string name="toast_skip">Skipping Question</string>
     <string name="toast_back">Back Question</string>
