@@ -12,10 +12,6 @@ import java.util.List;
 
 public class Quiz implements Parcelable {
 
-    private int mQuestionIndex;
-
-    private int mScoreValue;
-
     private Question[] mQuestionList = {
         new Question(R.string.question_australia, true),
         new Question(R.string.question_oceans, true),
@@ -27,6 +23,10 @@ public class Quiz implements Parcelable {
 
     private int[] mUserAnswers;
 
+    private int mQuestionIndex;
+
+    private int mScoreValue;
+
     public Quiz() {
         mQuestionIndex = 0;
         mScoreValue = 0;
@@ -34,9 +34,7 @@ public class Quiz implements Parcelable {
 
     public Quiz(Question[] questionList) {
 
-        mQuestionIndex = 0;
-        mScoreValue = 0;
-        mQuestionList = questionList;
+        setQuestionList(questionList);
     }
 
     private Quiz(Parcel in) {
@@ -44,20 +42,23 @@ public class Quiz implements Parcelable {
         mQuestionIndex = in.readInt();
         mScoreValue = in.readInt();
 
-        mQuestionList = (Question[]) in.readArray((Question[].class.getClassLoader()));
+        in.readTypedArray(mQuestionList, Question.CREATOR);
+
+        mUserAnswers = new int[mQuestionList.length];
+
+        in.readIntArray(mUserAnswers);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
 
         out.writeInt(mQuestionIndex);
         out.writeInt(mScoreValue);
-        out.writeArray(mQuestionList);
+
+        out.writeTypedArray(mQuestionList, 0);
+        out.writeIntArray(mUserAnswers);
     }
 
 
@@ -165,6 +166,10 @@ public class Quiz implements Parcelable {
         return correct;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     public static final Parcelable.Creator<Quiz> CREATOR = new Parcelable.Creator<Quiz>() {
         public Quiz createFromParcel(Parcel in) {
