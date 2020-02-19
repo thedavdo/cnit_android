@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.davdo.geoquiz.src.Question;
 import com.davdo.geoquiz.src.Quiz;
@@ -22,8 +23,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int CHEAT_REQUEST_CODE = 0;
+
     private static final String TAG = "MainActivity";
     public static final String QUIZ_INDEX = "quiz_obj";
+    public static final String QUESTION_INDEX = "question_obj";
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Quiz mQuizObj;
 
+    private Intent mCheatDisplay;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,12 +64,14 @@ public class MainActivity extends AppCompatActivity {
         mAnswerResult = findViewById(R.id.text_view_result);
         mScoreDisplay = findViewById(R.id.text_view_score);
 
+        mCheatDisplay = new Intent(MainActivity.this, CheatActivity.class);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.dialog_reset_inform)
             .setPositiveButton(R.string.dialog_reset_confirm, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
 
-                    mQuizObj.startQuiz();
+                    mQuizObj.resetQuiz();
                     updateQuestionDisplay();
 
                 }
@@ -144,13 +152,28 @@ public class MainActivity extends AppCompatActivity {
                 mConfirmReset.show();
                 return true;
             case R.id.menu_button_cheat:
-                Intent intent = new Intent(MainActivity.this, CheatActivity.class);
-                intent.putExtra(QUIZ_INDEX, mQuizObj);
-                startActivity(intent);
+
+                mCheatDisplay.putExtra(QUESTION_INDEX, mQuizObj.getCurrentQuestion());
+                startActivityForResult(mCheatDisplay, CHEAT_REQUEST_CODE);
 
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CHEAT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+                byte test = data.getByteExtra(CheatActivity.ANSWER_INDEX, (byte) -1);
+                if(test == 1) {
+                    mQuizObj.getCurrentQuestion().setUserCheated(true);
+                }
+            }
         }
     }
 
@@ -194,8 +217,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void onChoice(boolean choice) {
 
+        if(mQuizObj.getCurrentQuestion().hasUserCheated()) {
+            Toast.makeText(getApplicationContext(), "Cheating is Wrong.", Toast.LENGTH_SHORT).show();
+        }
+
         boolean result = mQuizObj.selectAnswer(choice);
         displayResult(result);
+
+        Log.d(TAG, "User Cheat Status: " + mQuizObj.getCurrentQuestion().hasUserCheated());
 
         pauseButtonInput();
     }
@@ -211,14 +240,12 @@ public class MainActivity extends AppCompatActivity {
 
         mQuestionDisplay.setText(String.format(getString(R.string.text_question), index+1, getString(currentQ.getTextResId())));
 
-        if(mQuizObj.isCurrentQuestionAnswered()) {
-
-            boolean wasCorrect = (mQuizObj.getUserAnswer(mQuizObj.getQuestionIndex()) == 1);
+        if(currentQ.hasUserAnswered()) {
 
             int resultID;
             int answerResponseColor;
 
-            if(wasCorrect) {
+            if(currentQ.isUserCorrect()) {
                 resultID = R.string.text_correct;
                 answerResponseColor = Color.GREEN;
             }
