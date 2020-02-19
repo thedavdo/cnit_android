@@ -15,7 +15,7 @@ public class Question implements Parcelable {
 
     protected Question(Parcel in) {
         mTextResId = in.readInt();
-        mCorrectAnswer = in.readByte() != 0;
+        mCorrectAnswer = (in.readByte() != 0);
     }
 
     @Override
