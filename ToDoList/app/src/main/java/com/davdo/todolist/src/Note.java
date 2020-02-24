@@ -15,7 +15,7 @@ public class Note implements Parcelable {
 
     public Note() {
 
-        mTitle = "<nil title>";
+        mTitle = "";
         mDate = new Date();
         mDone = false;
     }
