@@ -1,8 +1,10 @@
-package com.davdo.todolist;
+package com.davdo.todolist.anrdoid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.davdo.todolist.R;
 
 public class MainActivity extends AppCompatActivity {
 
