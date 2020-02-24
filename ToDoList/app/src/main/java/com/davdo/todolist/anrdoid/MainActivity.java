@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
-        if (fragment == null) {
+        if(fragment == null) {
             fragment = new NoteFragment();
             fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }

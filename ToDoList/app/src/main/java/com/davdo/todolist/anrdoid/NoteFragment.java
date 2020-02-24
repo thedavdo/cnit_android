@@ -74,7 +74,6 @@ public class NoteFragment extends Fragment {
 
 
         return v;
-        //return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
