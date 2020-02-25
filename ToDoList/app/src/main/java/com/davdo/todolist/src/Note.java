@@ -18,6 +18,7 @@ public class Note implements Parcelable {
         mTitle = "";
         mDate = new Date();
         mDone = false;
+        mId = UUID.randomUUID();
     }
 
     protected Note(Parcel in) {
