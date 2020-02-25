@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +21,7 @@ public class NoteListFragment extends Fragment {
 
     private NoteListVewModel mNoteListVewModel;
     private RecyclerView noteListView;
+    private NoteAdapter noteAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,29 +35,28 @@ public class NoteListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_note_list, container, false);
 
         mNoteListVewModel = new ViewModelProvider(this).get(NoteListVewModel.class);
+        mNoteListVewModel.generateExamples();
 
         noteListView = v.findViewById(R.id.note_recycler_view);
         noteListView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        updateUI();
+        noteAdapter = new NoteAdapter(mNoteListVewModel.getNoteCollection());
+        noteListView.setAdapter(noteAdapter);
 
         return v;
     }
 
     private void updateUI() {
 
-        NoteAdapter noteAdapter = new NoteAdapter(mNoteListVewModel.getNotes());
-
-        noteListView.setAdapter(noteAdapter);
+        noteAdapter.notifyDataSetChanged();
     }
-
 
     private class NoteHolder extends RecyclerView.ViewHolder {
 
-        TextView titleText;
-        TextView dateText;
+        private TextView titleText;
+        private TextView dateText;
 
-        public NoteHolder(@NonNull View itemView) {
+        NoteHolder(@NonNull View itemView) {
             super(itemView);
 
             titleText = itemView.findViewById(R.id.note_title);
@@ -65,16 +64,19 @@ public class NoteListFragment extends Fragment {
         }
 
         public void applyNote(Note note) {
-            titleText.setText(note.getTitle());
-            dateText.setText(note.getDate().toString());
+
+            if(note != null) {
+                titleText.setText(note.getTitle());
+                dateText.setText(note.getDate().toString());
+            }
         }
     }
 
     private class NoteAdapter extends RecyclerView.Adapter {
 
-        private NoteCollection mNotes;
+       private NoteCollection mNotes;
 
-        public NoteAdapter(NoteCollection notes) {
+        NoteAdapter(NoteCollection notes) {
             mNotes = notes;
         }
 
@@ -101,6 +103,7 @@ public class NoteListFragment extends Fragment {
         public int getItemCount() {
             return mNotes.getNotes().size();
         }
+
     }
 }
 

@@ -11,6 +11,7 @@ public class Note implements Parcelable {
     private UUID mId;
     private String mTitle;
     private Date mDate;
+
     private boolean mDone;
 
     public Note() {

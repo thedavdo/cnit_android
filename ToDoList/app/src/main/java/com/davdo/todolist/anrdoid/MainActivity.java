@@ -24,8 +24,8 @@ public class MainActivity extends AppCompatActivity {
             fragment = new NoteListFragment();
 
 //            Bundle testBundle = new Bundle();
-//            String noteKey =  mNotes.getNotes().keyAt(0);
-//            testBundle.putParcelable(NoteFragment.NOTE_INDEX, mNotes.getNotes().get(noteKey));
+//            String noteKey =  mNotes.getNoteCollection().keyAt(0);
+//            testBundle.putParcelable(NoteFragment.NOTE_INDEX, mNotes.getNoteCollection().get(noteKey));
 //
 //            fragment.setArguments(testBundle);
 

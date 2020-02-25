@@ -15,14 +15,19 @@ public class NoteListVewModel extends ViewModel {
     public NoteListVewModel() {
 
         mNotes = new NoteCollection();
+    }
+
+    public void generateExamples() {
 
         Calendar cal = Calendar.getInstance();
         Random r = new Random();
 
-        for(int i = 0; i < 20; i++) {
+        int countNotes = mNotes.getNotes().size() + 1;
+
+        for(int i = countNotes; i < countNotes + 20; i++) {
 
             Note tempNote = new Note();
-            tempNote.setTitle("My Note #" + (i + 1));
+            tempNote.setTitle("My Note #" + (i));
             tempNote.setDone(r.nextBoolean());
 
             cal.setTimeInMillis(Math.abs(r.nextLong()));
@@ -32,7 +37,7 @@ public class NoteListVewModel extends ViewModel {
         }
     }
 
-    public NoteCollection getNotes() {
+    public NoteCollection getNoteCollection() {
         return mNotes;
     }
 }
