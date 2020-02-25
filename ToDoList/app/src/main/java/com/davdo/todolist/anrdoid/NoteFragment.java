@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +39,6 @@ public class NoteFragment extends Fragment {
 
     private Note mNote;
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +49,6 @@ public class NoteFragment extends Fragment {
             mNote = savedInstanceState.getParcelable(NOTE_INDEX);
         }
         else {
-//            getIntent().getParcelableExtra(MainActivity.QUESTION_INDEX);
             mNote = new Note();
         }
     }
