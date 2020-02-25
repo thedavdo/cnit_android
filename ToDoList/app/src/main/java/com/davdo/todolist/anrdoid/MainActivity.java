@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import com.davdo.todolist.R;
-import com.davdo.todolist.src.Note;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,20 +16,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-
         Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
 
         if(fragment == null) {
 
-//            Bundle testBundle = new Bundle();
-//
-//            Note testNote = new Note();
-//            testNote.setTitle("Tester");
-//            testNote.setDone(true);
-//
-//            testBundle.putParcelable(NoteFragment.NOTE_INDEX, testNote);
+//            fragment = new NoteFragment();
+            fragment = new NoteListFragment();
 
-            fragment = new NoteFragment();
+//            Bundle testBundle = new Bundle();
+//            String noteKey =  mNotes.getNotes().keyAt(0);
+//            testBundle.putParcelable(NoteFragment.NOTE_INDEX, mNotes.getNotes().get(noteKey));
+//
 //            fragment.setArguments(testBundle);
 
             fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
