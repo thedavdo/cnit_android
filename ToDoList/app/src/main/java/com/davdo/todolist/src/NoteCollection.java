@@ -1,19 +1,20 @@
 package com.davdo.todolist.src;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import androidx.collection.ArrayMap;
 
 public class NoteCollection {
 
-
-    private ArrayList<Note> mNotes;
+    private ArrayMap<String, Note> mNotes;
 
     public NoteCollection() {
-        mNotes = new ArrayList<>();
+        mNotes = new ArrayMap<>();
     }
 
-    public ArrayList<Note> getNotes() {
+    public void insertNote(Note newNote) {
+        mNotes.put(newNote.getId().toString(), newNote);
+    }
+
+    public ArrayMap<String, Note> getNotes() {
         return mNotes;
     }
 }
