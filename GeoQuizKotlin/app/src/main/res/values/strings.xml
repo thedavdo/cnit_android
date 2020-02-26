@@ -1,3 +1,41 @@
 <resources>
-    <string name="app_name">GeoQuiz Kotlin</string>
+    <string name="activity_label_app">GeoQuiz</string>
+    <string name="activity_label_cheat">Cheat Sheet</string>
+
+    <string name="menu_button_cheat">Cheat</string>
+    <string name="menu_button_reset">Reset Game</string>
+
+    <string name="text_question">Question #%d\n%s</string>
+
+    <string name="text_correct">Correct</string>
+    <string name="text_incorrect">Wrong</string>
+    <string name="text_cheated">Cheater</string>
+
+    <string name="text_result">%s!\nThe answer is %s.</string>
+
+    <string name="text_score">Score: %d</string>
+
+    <string name="toast_skip">Skipping Question</string>
+    <string name="toast_back">Back Question</string>
+
+    <string name="button_true">true</string>
+    <string name="button_false">false</string>
+    <string name="button_skip">skip</string>
+    <string name="button_back">back</string>
+    <string name="button_reset">reset</string>
+
+    <string name="dialog_cheat_inform">You really want to cheat?</string>
+    <string name="dialog_cheat_confirm">CHEAT</string>
+    <string name="dialog_cheat_deny">NO</string>
+
+    <string name="dialog_reset_inform">Do you want to reset?</string>
+    <string name="dialog_reset_confirm">RESET</string>
+    <string name="dialog_reset_deny">NO THANKS</string>
+
+    <string name="question_australia">Canberra is the capital of Australia.</string>
+    <string name="question_oceans">The Pacific Ocean is larger than the Atlantic Ocean.</string>
+    <string name="question_mideast">The Suez Canal connects the Red Sea and the Indian Ocean.</string>
+    <string name="question_africa">The source of the Nile River is in Egypt.</string>
+    <string name="question_americas">The Amazon River is the longest river in the Americas.</string>
+    <string name="question_asia">Lake Baikal is the world\'s oldest and deepest freshwater lake.</string>
 </resources>
