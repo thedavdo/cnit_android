@@ -16,8 +16,8 @@ class Quiz() : Parcelable {
         Question(Res.string.question_asia, true)
     )
 
-    private var mQuestionIndex = 0
-    private var mScoreValue = 0
+    private var mQuestionIndex :Int = 0
+    private var mScoreValue :Int = 0
 
     constructor(inData: Parcel) : this() {
 

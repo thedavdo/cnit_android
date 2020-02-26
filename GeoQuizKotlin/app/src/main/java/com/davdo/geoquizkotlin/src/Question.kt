@@ -5,11 +5,11 @@ import android.os.Parcelable
 
 class Question() : Parcelable {
 
-    private var mTextResId = 0
-    private var mCorrectAnswer = false
+    private var mTextResId: Int = 0
+    private var mCorrectAnswer: Boolean = false
 
-    private var mUserAnswer = 0
-    private var mUserCheated = false
+    private var mUserAnswer: Int = 0
+    private var mUserCheated: Boolean = false
 
     constructor (textResId: Int, answer: Boolean) : this() {
         mTextResId = textResId
