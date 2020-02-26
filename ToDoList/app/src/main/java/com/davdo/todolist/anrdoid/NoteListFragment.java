@@ -2,6 +2,7 @@ package com.davdo.todolist.anrdoid;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ import com.davdo.todolist.src.NoteCollection;
 public class NoteListFragment extends Fragment {
 
     private NoteListVewModel mNoteListVewModel;
-    private RecyclerView noteListView;
+    private RecyclerView noteRecycler;
     private NoteAdapter noteAdapter;
 
     @Override
@@ -37,11 +38,13 @@ public class NoteListFragment extends Fragment {
         mNoteListVewModel = new ViewModelProvider(this).get(NoteListVewModel.class);
         mNoteListVewModel.generateExamples();
 
-        noteListView = v.findViewById(R.id.note_recycler_view);
-        noteListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        noteRecycler = v.findViewById(R.id.note_recycler_view);
+        noteRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
         noteAdapter = new NoteAdapter(mNoteListVewModel.getNoteCollection());
-        noteListView.setAdapter(noteAdapter);
+        noteRecycler.setAdapter(noteAdapter);
+
+//        noteRecycler.addOnItemTouchListener();
 
         return v;
     }
