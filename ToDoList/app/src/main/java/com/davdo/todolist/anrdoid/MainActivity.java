@@ -16,20 +16,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
+        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_note_container);
 
         if(fragment == null) {
 
-//            fragment = new NoteFragment();
-            fragment = new NoteListFragment();
+            fragment = new NoteFragment();
+//            fragment = new NoteListFragment();
 
 //            Bundle testBundle = new Bundle();
-//            String noteKey =  mNotes.getNoteCollection().keyAt(0);
-//            testBundle.putParcelable(NoteFragment.NOTE_INDEX, mNotes.getNoteCollection().get(noteKey));
-//
+//            testBundle.putParcelable(NoteFragment.NOTE_INDEX, note);
 //            fragment.setArguments(testBundle);
 
-            fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
+            fragmentManager.beginTransaction().add(R.id.fragment_note_container, fragment).commit();
         }
     }
 }

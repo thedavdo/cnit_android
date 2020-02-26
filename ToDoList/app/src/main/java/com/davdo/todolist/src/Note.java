@@ -3,9 +3,12 @@ package com.davdo.todolist.src;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+
 import java.util.Date;
 import java.util.UUID;
 
+@Entity
 public class Note implements Parcelable {
 
     private UUID mId;
@@ -13,6 +16,7 @@ public class Note implements Parcelable {
     private Date mDate;
 
     private boolean mDone;
+
 
     public Note() {
 

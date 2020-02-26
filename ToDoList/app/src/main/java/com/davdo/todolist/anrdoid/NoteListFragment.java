@@ -1,11 +1,13 @@
 package com.davdo.todolist.anrdoid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,8 +46,6 @@ public class NoteListFragment extends Fragment {
         noteAdapter = new NoteAdapter(mNoteListVewModel.getNoteCollection());
         noteRecycler.setAdapter(noteAdapter);
 
-//        noteRecycler.addOnItemTouchListener();
-
         return v;
     }
 
@@ -54,24 +54,36 @@ public class NoteListFragment extends Fragment {
         noteAdapter.notifyDataSetChanged();
     }
 
-    private class NoteHolder extends RecyclerView.ViewHolder {
+    private class NoteHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView titleText;
-        private TextView dateText;
+        private Note mNote;
+
+        private TextView mTitleText;
+        private TextView mDateText;
 
         NoteHolder(@NonNull View itemView) {
             super(itemView);
 
-            titleText = itemView.findViewById(R.id.note_title);
-            dateText = itemView.findViewById(R.id.note_date);
+            mTitleText = itemView.findViewById(R.id.note_title);
+            mDateText = itemView.findViewById(R.id.note_date);
+
+            itemView.setOnClickListener(this);
         }
 
         public void applyNote(Note note) {
 
             if(note != null) {
-                titleText.setText(note.getTitle());
-                dateText.setText(note.getDate().toString());
+                mNote = note;
+
+                mTitleText.setText(note.getTitle());
+                mDateText.setText(note.getDate().toString());
+
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+
         }
     }
 
