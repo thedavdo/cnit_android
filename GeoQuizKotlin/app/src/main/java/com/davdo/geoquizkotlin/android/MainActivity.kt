@@ -129,6 +129,7 @@ class MainActivity : AppCompatActivity() {
         return when(item.itemId) {
             R.id.menu_button_reset -> {
                 mConfirmReset?.show()
+
                 true
             }
             R.id.menu_button_cheat -> {
@@ -157,11 +158,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
         super.onSaveInstanceState(savedInstanceState)
         Log.i(mLogTag, "onSaveInstanceState")
 
         savedInstanceState.putParcelable(mQuizIndex, mQuizObj)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(mLogTag, "onStart() called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(mLogTag, "onPause() called")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(mLogTag, "onResume() called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(mLogTag, "onStop() called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(mLogTag, "onDestroy() called")
     }
 
     private fun onChoice(choice: Boolean) {
@@ -176,32 +202,6 @@ class MainActivity : AppCompatActivity() {
         //Log.d(mLogTag, "User Cheat Status: " + mQuizObj.getCurrentQuestion().hasUserCheated());
 
         pauseButtonInput()
-    }
-
-    public override fun onStart() {
-        super.onStart()
-        Log.d(mLogTag, "onStart() called")
-    }
-
-
-    public override fun onPause() {
-        super.onPause()
-        Log.d(mLogTag, "onPause() called")
-    }
-
-    public override fun onResume() {
-        super.onResume()
-        Log.d(mLogTag, "onResume() called")
-    }
-
-    public override fun onStop() {
-        super.onStop()
-        Log.d(mLogTag, "onStop() called")
-    }
-
-    public override fun onDestroy() {
-        super.onDestroy()
-        Log.d(mLogTag, "onDestroy() called")
     }
 
     private fun updateQuestionDisplay() {

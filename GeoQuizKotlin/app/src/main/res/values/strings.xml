@@ -1,5 +1,5 @@
 <resources>
-    <string name="activity_label_app">GeoQuiz</string>
+    <string name="activity_label_app">GeoQuiz: Kotlin</string>
     <string name="activity_label_cheat">Cheat Sheet</string>
 
     <string name="menu_button_cheat">Cheat</string>
