@@ -1,42 +1,80 @@
 package com.davdo.geoquizkotlin.android
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import com.davdo.geoquizkotlin.R
 import com.davdo.geoquizkotlin.src.Quiz
+import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.content.res.ResourcesCompat
+import android.os.CountDownTimer
+import android.view.Menu
+import android.view.MenuItem
 
+const val QUESTION_INDEX = "question_obj"
 
 class MainActivity : AppCompatActivity() {
 
-    private val CHEAT_REQUEST_CODE = 0
+    private val mCheatRequestCode = 0
 
-    private val TAG = "MainActivity"
-    val QUIZ_INDEX = "quiz_obj"
-    val QUESTION_INDEX = "question_obj"
+    private val mLogTag = "MainActivity"
+    private val mQuizIndex = "quiz_obj"
 
-    private lateinit var trueButton: Button
-    private lateinit var falseButton: Button
+    private var mTrueButton: Button? = null
+    private var mFalseButton: Button? = null
+
+    private var mSkipButton: FloatingActionButton? = null
+    private var mBackButton: FloatingActionButton? = null
+
+    private var mConfirmReset: AlertDialog? = null
+
+    private var mQuestionDisplay: TextView? = null
+    private var mAnswerResult: TextView? = null
+
+    private var mScoreDisplay: TextView? = null
 
     private var disableButtons: Boolean = false
     private var disableAnswerButtons: Boolean = false
 
     private lateinit var mQuizObj: Quiz
 
-    //private lateinit val mCheatDisplay: Intent
+    private lateinit var mCheatDisplay: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        trueButton = findViewById(R.id.button_true)
-        falseButton = findViewById(R.id.button_false)
+        mTrueButton = findViewById(R.id.button_true)
+        mFalseButton = findViewById(R.id.button_false)
 
-        trueButton.setOnClickListener { view: View ->
+        mSkipButton = findViewById(R.id.button_skip)
+        mBackButton = findViewById(R.id.button_back)
+
+        mQuestionDisplay = findViewById(R.id.text_view_question)
+        mAnswerResult = findViewById(R.id.text_view_result)
+        mScoreDisplay = findViewById(R.id.text_view_score)
+
+        mCheatDisplay = Intent(this@MainActivity, CheatActivity::class.java)
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setMessage(R.string.dialog_reset_inform);
+        dialogBuilder.setPositiveButton(R.string.dialog_reset_confirm) { dialog, id ->
+
+            mQuizObj.resetQuiz()
+            updateQuestionDisplay()
+        }
+        dialogBuilder.setNegativeButton(R.string.dialog_reset_deny) { dialog, id -> }
+
+        mConfirmReset = dialogBuilder.create()
+
+        mTrueButton?.setOnClickListener {
 
             if(disableButtons) return@setOnClickListener
             if(disableAnswerButtons) return@setOnClickListener
@@ -44,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             onChoice(true)
         }
 
-        falseButton.setOnClickListener { view: View ->
+        mFalseButton?.setOnClickListener {
 
             if(disableButtons) return@setOnClickListener
             if(disableAnswerButtons) return@setOnClickListener
@@ -52,18 +90,221 @@ class MainActivity : AppCompatActivity() {
             onChoice(false)
         }
 
+        mSkipButton?.setOnClickListener {
+
+            if(disableButtons) return@setOnClickListener
+
+            mQuizObj.progressQuestion()
+            updateQuestionDisplay()
+        }
+
+        mBackButton?.setOnClickListener {
+
+            if(disableButtons) return@setOnClickListener
+
+            mQuizObj.progressQuestion(true)
+            updateQuestionDisplay()
+        }
+
 
         if (savedInstanceState != null) {
-            mQuizObj = savedInstanceState.getParcelable<Quiz>(QUIZ_INDEX)!!
-            Log.d(TAG, "Loading Parcelable!!!")
-        } else {
+            mQuizObj = savedInstanceState.getParcelable(mQuizIndex)!!
+            Log.d(mLogTag, "Loading Parcelable!!!")
+        }
+        else {
             mQuizObj = Quiz()
             mQuizObj.startQuiz()
         }
+
+        updateQuestionDisplay()
     }
 
-    fun onChoice(choice: Boolean) {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.action_main, menu)
+        return true
+    }
 
-        Toast.makeText(this, "" + choice, Toast.LENGTH_SHORT).show()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when(item.itemId) {
+            R.id.menu_button_reset -> {
+                mConfirmReset?.show()
+                true
+            }
+            R.id.menu_button_cheat -> {
+
+                mCheatDisplay.putExtra(QUESTION_INDEX, mQuizObj.getCurrentQuestion())
+                startActivityForResult(mCheatDisplay, mCheatRequestCode)
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == mCheatRequestCode) {
+            if (resultCode == Activity.RESULT_OK) {
+
+                val test: Byte? = data?.getByteExtra(ANSWER_INDEX, (-1).toByte())
+
+                if (test?.toInt() == 1) {
+                    mQuizObj.getCurrentQuestion().setUserCheated(true)
+                }
+            }
+        }
+    }
+
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+        Log.i(mLogTag, "onSaveInstanceState")
+
+        savedInstanceState.putParcelable(mQuizIndex, mQuizObj)
+    }
+
+    private fun onChoice(choice: Boolean) {
+
+        if(mQuizObj.getCurrentQuestion().hasUserCheated()) {
+            Toast.makeText(applicationContext, "Cheating is Wrong.", Toast.LENGTH_SHORT).show()
+        }
+
+        mQuizObj.selectAnswer(choice)
+        displayResult()
+
+        //Log.d(mLogTag, "User Cheat Status: " + mQuizObj.getCurrentQuestion().hasUserCheated());
+
+        pauseButtonInput()
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        Log.d(mLogTag, "onStart() called")
+    }
+
+
+    public override fun onPause() {
+        super.onPause()
+        Log.d(mLogTag, "onPause() called")
+    }
+
+    public override fun onResume() {
+        super.onResume()
+        Log.d(mLogTag, "onResume() called")
+    }
+
+    public override fun onStop() {
+        super.onStop()
+        Log.d(mLogTag, "onStop() called")
+    }
+
+    public override fun onDestroy() {
+        super.onDestroy()
+        Log.d(mLogTag, "onDestroy() called")
+    }
+
+    private fun updateQuestionDisplay() {
+
+        val index = mQuizObj.getQuestionIndex()
+        val currentQ = mQuizObj.getCurrentQuestion()
+
+        mQuestionDisplay?.text = String.format(
+            getString(R.string.text_question),
+            index + 1,
+            getString(currentQ.getTextResId())
+        )
+
+        updateAnswerDisplay()
+        updateScore()
+    }
+
+    private fun updateAnswerDisplay() {
+
+        val currentQ = mQuizObj.getCurrentQuestion()
+
+        if (currentQ.hasUserAnswered()) {
+
+            val resultID: Int
+            val answerResponseColor: Int
+
+            if (currentQ.hasUserCheated()) {
+                resultID = R.string.text_cheated
+                answerResponseColor = Color.RED
+            }
+            else {
+                if (currentQ.isUserCorrect()) {
+                    resultID = R.string.text_correct
+                    answerResponseColor = Color.GREEN
+                }
+                else {
+                    resultID = R.string.text_incorrect
+                    answerResponseColor = ResourcesCompat.getColor(
+                        resources,
+                        R.color.base_wrong,
+                        null)
+                }
+            }
+
+            val correctAnswer = if (currentQ.getCorrectAnswer())
+                R.string.button_true
+            else
+                R.string.button_false
+
+            val result = String.format(
+                getString(R.string.text_result),
+                getString(resultID),
+                getString(correctAnswer)
+            )
+
+            mAnswerResult?.text = result
+            mAnswerResult?.setTextColor(answerResponseColor)
+
+            disableAnswerButtons = true
+        }
+        else {
+            mAnswerResult?.text = ""
+            disableAnswerButtons = false
+        }
+    }
+
+    private fun updateScore() {
+
+        val colorRef: Int = when {
+            (mQuizObj.getScore() == 0) -> Color.BLACK
+            (mQuizObj.getScore() < 0) -> ResourcesCompat.getColor(resources, R.color.base_wrong, null)
+            else -> Color.GREEN
+        }
+
+        mScoreDisplay?.text = String.format(getString(R.string.text_score), mQuizObj.getScore())
+        mScoreDisplay?.setTextColor(colorRef)
+    }
+
+    private fun clearResult() {
+        mAnswerResult?.text = ""
+    }
+
+    private fun displayResult() {
+
+        updateAnswerDisplay()
+        updateScore()
+    }
+
+    private fun pauseButtonInput() {
+
+        object : CountDownTimer(2000, 1000) {
+            override fun onFinish() {
+
+                mQuizObj.progressQuestion()
+                clearResult()
+                updateQuestionDisplay()
+
+                disableButtons = false
+            }
+
+            override fun onTick(millisUntilFinished: Long) {}
+        }.start()
+
+        disableButtons = true
     }
 }
