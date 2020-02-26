@@ -17,14 +17,26 @@ public class Note implements Parcelable {
 
     private boolean mDone;
 
-
     public Note() {
-
-        mTitle = "";
-        mDate = new Date();
-        mDone = false;
-        mId = UUID.randomUUID();
+        this(UUID.randomUUID());
     }
+
+    public Note(UUID id) {
+        this("", new Date(), false, id);
+    }
+
+    public Note(String title, Date date, boolean done) {
+        this(title, date, done, UUID.randomUUID());
+    }
+
+    public Note(String title, Date date, boolean done, UUID id) {
+
+        mTitle = title;
+        mDate = date;
+        mDone = done;
+        mId = id;
+    }
+
 
     protected Note(Parcel in) {
         mTitle = in.readString();

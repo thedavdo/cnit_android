@@ -26,12 +26,9 @@ public class NoteListVewModel extends ViewModel {
 
         for(int i = countNotes; i < countNotes + 20; i++) {
 
-            Note tempNote = new Note();
-            tempNote.setTitle("My Note #" + (i));
-            tempNote.setDone(r.nextBoolean());
-
             cal.setTimeInMillis(Math.abs(r.nextLong()));
-            tempNote.setDate(cal.getTime());
+
+            Note tempNote = new Note("My Note #" + (i), cal.getTime(), r.nextBoolean());
 
             mNotes.insertNote(tempNote);
         }
