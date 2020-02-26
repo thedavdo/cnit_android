@@ -3,7 +3,7 @@ package com.davdo.geoquizkotlin.src
 import android.os.Parcel
 import android.os.Parcelable
 
-class Question() : Parcelable {
+class Question : Parcelable {
 
     private var mTextResId: Int = 0
     private var mCorrectAnswer: Boolean = false
@@ -11,13 +11,13 @@ class Question() : Parcelable {
     private var mUserAnswer: Int = 0
     private var mUserCheated: Boolean = false
 
-    constructor (textResId: Int, answer: Boolean) : this() {
+    constructor (textResId: Int, answer: Boolean) {
         mTextResId = textResId
         mCorrectAnswer = answer
         mUserAnswer = 0
     }
 
-    constructor(arrive: Parcel) : this() {
+    constructor(arrive: Parcel) {
 
         mTextResId = arrive.readInt()
         mCorrectAnswer = arrive.readInt() != 0

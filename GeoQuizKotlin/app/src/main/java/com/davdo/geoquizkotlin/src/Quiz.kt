@@ -19,7 +19,17 @@ class Quiz() : Parcelable {
     private var mQuestionIndex :Int = 0
     private var mScoreValue :Int = 0
 
-    constructor(inData: Parcel) : this() {
+    init {
+        mQuestionIndex = 0
+        mScoreValue = 0
+    }
+
+    constructor(questionList: MutableList<Question>): this() {
+
+        setQuestionList(questionList)
+    }
+
+    private constructor(inData: Parcel) : this() {
 
         mQuestionIndex = inData.readInt()
         mScoreValue = inData.readInt()
