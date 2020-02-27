@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Todo List</string>
+
+    <string name="hint_note_title">Enter a title for the note.</string>
+
+    <string name="label_note_title">Title</string>
+    <string name="label_note_details">Details</string>
+    <string name="label_note_finished">Finished</string>
+</resources>
