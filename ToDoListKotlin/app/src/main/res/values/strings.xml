@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Todo List</string>
+    <string name="app_name">Todo List: Kotlin</string>
 
     <string name="hint_note_title">Enter a title for the note.</string>
 
