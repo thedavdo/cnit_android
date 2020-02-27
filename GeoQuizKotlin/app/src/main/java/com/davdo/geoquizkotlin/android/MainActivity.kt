@@ -37,14 +37,12 @@ class MainActivity : AppCompatActivity() {
 
     private var mQuestionDisplay: TextView? = null
     private var mAnswerResult: TextView? = null
-
     private var mScoreDisplay: TextView? = null
 
     private var disableButtons: Boolean = false
     private var disableAnswerButtons: Boolean = false
 
     private lateinit var mQuizObj: Quiz
-
     private lateinit var mCheatDisplay: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,7 +135,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_button_cheat -> {
 
-                mCheatDisplay.putExtra(QUESTION_INDEX, mQuizObj.getCurrentQuestion())
+                mCheatDisplay.putExtra(QUESTION_INDEX, mQuizObj.currentQuestion)
                 startActivityForResult(mCheatDisplay, mCheatRequestCode)
 
                 true
@@ -155,7 +153,7 @@ class MainActivity : AppCompatActivity() {
                 val test: Byte? = data?.getByteExtra(ANSWER_INDEX, (-1).toByte())
 
                 if (test?.toInt() == 1) {
-                    mQuizObj.getCurrentQuestion().setUserCheated(true)
+                    mQuizObj.currentQuestion.userCheated = true
                 }
             }
         }
@@ -195,7 +193,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onChoice(choice: Boolean) {
 
-        if(mQuizObj.getCurrentQuestion().hasUserCheated()) {
+        if(mQuizObj.currentQuestion.userCheated) {
             Toast.makeText(applicationContext, "Cheating is Wrong.", Toast.LENGTH_SHORT).show()
         }
 
@@ -209,13 +207,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateQuestionDisplay() {
 
-        val index = mQuizObj.getQuestionIndex()
-        val currentQ = mQuizObj.getCurrentQuestion()
+        val index = mQuizObj.questionIndex
+        val currentQ = mQuizObj.currentQuestion
 
         mQuestionDisplay?.text = String.format(
             getString(R.string.text_question),
             index + 1,
-            getString(currentQ.getTextResId())
+            getString(currentQ.textResId)
         )
 
         updateAnswerDisplay()
@@ -224,14 +222,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateAnswerDisplay() {
 
-        val currentQ = mQuizObj.getCurrentQuestion()
+        val currentQ = mQuizObj.currentQuestion
 
         if (currentQ.hasUserAnswered()) {
 
             val resultID: Int
             val answerResponseColor: Int
 
-            if (currentQ.hasUserCheated()) {
+            if (currentQ.userCheated) {
                 resultID = R.string.text_cheated
                 answerResponseColor = Color.RED
             }
@@ -249,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val correctAnswer = if (currentQ.getCorrectAnswer())
+            val correctAnswer = if (currentQ.correctAnswer)
                 R.string.button_true
             else
                 R.string.button_false
@@ -274,12 +272,14 @@ class MainActivity : AppCompatActivity() {
     private fun updateScore() {
 
         val colorRef: Int = when {
-            (mQuizObj.getScore() == 0) -> Color.BLACK
-            (mQuizObj.getScore() < 0) -> ResourcesCompat.getColor(resources, R.color.base_wrong, null)
+//            (mQuizObj.getScore() == 0) -> Color.BLACK
+//            (mQuizObj.getScore() < 0) -> ResourcesCompat.getColor(resources, R.color.base_wrong, null)
+            (mQuizObj.score == 0) -> Color.BLACK
+            (mQuizObj.score < 0) -> ResourcesCompat.getColor(resources, R.color.base_wrong, null)
             else -> Color.GREEN
         }
 
-        mScoreDisplay?.text = String.format(getString(R.string.text_score), mQuizObj.getScore())
+        mScoreDisplay?.text = String.format(getString(R.string.text_score), mQuizObj.score)
         mScoreDisplay?.setTextColor(colorRef)
     }
 

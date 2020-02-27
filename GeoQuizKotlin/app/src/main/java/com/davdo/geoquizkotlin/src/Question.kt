@@ -5,32 +5,32 @@ import android.os.Parcelable
 
 class Question : Parcelable {
 
-    private var mTextResId: Int = 0
-    private var mCorrectAnswer: Boolean = false
+    var textResId: Int = 0
+    var correctAnswer: Boolean = false
+    var userCheated: Boolean = false
 
     private var mUserAnswer: Int = 0
-    private var mUserCheated: Boolean = false
 
-    constructor (textResId: Int, answer: Boolean) {
-        mTextResId = textResId
-        mCorrectAnswer = answer
+    constructor (resId: Int, answer: Boolean) {
+        textResId = resId
         mUserAnswer = 0
+        correctAnswer = answer
     }
 
     constructor(arrive: Parcel) {
 
-        mTextResId = arrive.readInt()
-        mCorrectAnswer = arrive.readInt() != 0
+        textResId = arrive.readInt()
+        correctAnswer = arrive.readInt() != 0
+        userCheated = arrive.readInt() != 0
         mUserAnswer = arrive.readInt()
-        mUserCheated = arrive.readInt() != 0
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
 
-        dest.writeInt(mTextResId)
-        dest.writeInt((if (mCorrectAnswer) 1 else 0))
+        dest.writeInt(textResId)
+        dest.writeInt((if (correctAnswer) 1 else 0))
+        dest.writeInt((if (userCheated) 1 else 0))
         dest.writeInt(mUserAnswer)
-        dest.writeInt((if (mUserCheated) 1 else 0))
     }
 
     fun resetAnswer()  {
@@ -49,33 +49,9 @@ class Question : Parcelable {
         return mUserAnswer != 0
     }
 
-    fun setUserCheated(cheated: Boolean) {
-        mUserCheated = cheated
-    }
-
-    fun hasUserCheated(): Boolean {
-        return mUserCheated
-    }
-
     //This will return false when the user has not answered.
     fun isUserCorrect(): Boolean {
-        return (if (mCorrectAnswer) 1 else -1) == mUserAnswer
-    }
-
-    fun getTextResId(): Int {
-        return mTextResId
-    }
-
-    fun getCorrectAnswer(): Boolean {
-        return mCorrectAnswer
-    }
-
-    fun setTextResId(textResId: Int) {
-        mTextResId = textResId
-    }
-
-    fun setCorrectAnswer(answerTrue: Boolean) {
-        mCorrectAnswer = answerTrue
+        return (if (correctAnswer) 1 else -1) == mUserAnswer
     }
 
     override fun describeContents(): Int {

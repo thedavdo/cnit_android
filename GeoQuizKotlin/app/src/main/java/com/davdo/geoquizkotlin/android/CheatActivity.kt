@@ -26,7 +26,7 @@ class CheatActivity : AppCompatActivity() {
     private var mAnswerResult: TextView? = null
     private var dataCallback: Intent? = null
 
-    private var mQuestion: Question? = null
+    private lateinit var mQuestion: Question
     private var showAnswer: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,15 +43,19 @@ class CheatActivity : AppCompatActivity() {
 
         dataCallback = Intent()
 
-        if (savedInstanceState != null) {
-            mQuestion = savedInstanceState.getParcelable(QUESTION_INDEX)
-            showAnswer = savedInstanceState.getByte(ANSWER_INDEX).toInt() != 0
+        val parQuestion: Question?
 
+        if (savedInstanceState != null) {
+            parQuestion = savedInstanceState.getParcelable(QUESTION_INDEX)
+            showAnswer = savedInstanceState.getByte(ANSWER_INDEX).toInt() != 0
             updateIntent()
         }
         else {
-            mQuestion = intent.getParcelableExtra(QUESTION_INDEX)
+            parQuestion = intent.getParcelableExtra(QUESTION_INDEX)
         }
+
+        if(parQuestion != null)
+            mQuestion = parQuestion
 
         val builder = AlertDialog.Builder(this)
         builder.setMessage(R.string.dialog_cheat_inform)
@@ -108,12 +112,12 @@ class CheatActivity : AppCompatActivity() {
 
     private fun updateDisplay() {
 
-        mQuestionDisplay?.setText(mQuestion!!.getTextResId())
+        mQuestionDisplay?.setText(mQuestion.textResId)
 
         var answerID = R.string.button_false
         var answerColor = Color.RED
 
-        if (mQuestion!!.getCorrectAnswer()) {
+        if (mQuestion.correctAnswer) {
             answerID = R.string.button_true
             answerColor = Color.GREEN
         }

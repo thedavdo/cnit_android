@@ -7,7 +7,7 @@ import com.davdo.geoquizkotlin.R as Res
 
 class Quiz() : Parcelable {
 
-    private var mQuestionList: MutableList<Question> = mutableListOf(
+    var questionList: MutableList<Question> = mutableListOf(
         Question(Res.string.question_australia, true),
         Question(Res.string.question_oceans, true),
         Question(Res.string.question_mideast, false),
@@ -15,117 +15,111 @@ class Quiz() : Parcelable {
         Question(Res.string.question_americas, true),
         Question(Res.string.question_asia, true)
     )
+        set(value) {
+            if (value.isNotEmpty()) {
+                field = value
+                score = 0
+                questionIndex = 0
+            }
+        }
 
-    private var mQuestionIndex :Int = 0
-    private var mScoreValue :Int = 0
+    var currentQuestion: Question
+        get() {
+            return questionList[questionIndex]
+        }
+        set(value) {
+            val tempIndex = questionList.indexOf(value)
+            if (tempIndex != -1)
+                questionIndex = tempIndex
+        }
+
+    var questionIndex :Int = 0
+        set(value) {
+            field = when {
+                (value >= 0 && value <= questionList.size - 1) -> value
+                else -> field
+            }
+        }
+
+    var score :Int = 0
+        private set
 
     init {
-        mQuestionIndex = 0
-        mScoreValue = 0
+        questionIndex = 0
+        score = 0
     }
 
     constructor(questionList: MutableList<Question>): this() {
 
-        setQuestionList(questionList)
+        this.questionList = questionList
     }
 
     private constructor(inData: Parcel) : this() {
 
-        mQuestionIndex = inData.readInt()
-        mScoreValue = inData.readInt()
+        questionIndex = inData.readInt()
+        score = inData.readInt()
 
-        inData.readTypedList<Question>(mQuestionList, Question)
+        inData.readTypedList<Question>(questionList, Question)
     }
 
     override fun writeToParcel(out: Parcel, flags: Int) {
 
-        out.writeInt(mQuestionIndex)
-        out.writeInt(mScoreValue)
+        out.writeInt(questionIndex)
+        out.writeInt(score)
 
         //out.writeTypedArray(mQuestionList, 0)
 
-        out.writeTypedList<Question>(mQuestionList)
+        out.writeTypedList<Question>(questionList)
     }
 
     fun startQuiz() {
-        //val shuffleList = mutableListOf(mQuestionList)
-        mQuestionList.shuffle()
-
-        setQuestionList(mQuestionList)
+        questionIndex = 0
+        score = 0
+        questionList.shuffle()
     }
 
     fun resetQuiz() {
         startQuiz()
-        for (q in mQuestionList) {
+        for (q in questionList) {
             q.resetAnswer()
         }
     }
 
-    fun setQuestionList(questionList: MutableList<Question>) {
-
-        if (questionList.isNotEmpty()) {
-            mQuestionList = questionList
-            mQuestionIndex = 0
-            mScoreValue = 0
-        }
-    }
-
-    fun setQuestion(index: Int) {
-        if (index < 0) return
-        if (index > mQuestionList.size - 1) return
-        mQuestionIndex = index
-    }
-
-    fun getScore(): Int {
-        return mScoreValue
-    }
-
-    fun getQuestionIndex(): Int {
-        return mQuestionIndex
-    }
-
-    fun getCurrentQuestion(): Question {
-        return mQuestionList[mQuestionIndex]
-    }
-
-    fun getQuestionList(): MutableList<Question> {
-        return mQuestionList
-    }
 
     fun progressQuestion() {
         progressQuestion(false)
     }
 
     fun progressQuestion(backward: Boolean) {
-        if (backward)
-            mQuestionIndex--
-        else
-            mQuestionIndex++
 
-        if (mQuestionIndex < 0)
-            mQuestionIndex = mQuestionList.size - 1
-
-        if (mQuestionIndex >= mQuestionList.size)
-            mQuestionIndex = 0
-        setQuestion(mQuestionIndex)
+        if (backward) {
+            if(questionIndex - 1 < 0)
+                questionIndex = questionList.size - 1
+            else
+                questionIndex--
+        }
+        else {
+            if(questionIndex + 1 > questionList.size - 1)
+                questionIndex = 0
+            else
+                questionIndex++
+        }
     }
 
     fun selectAnswer(answer: Boolean): Boolean {
 
-        getCurrentQuestion().setUserAnswer(answer)
+        currentQuestion.setUserAnswer(answer)
 
-        val correct = getCurrentQuestion().isUserCorrect()
+        val correct = currentQuestion.isUserCorrect()
 
-        if (getCurrentQuestion().hasUserCheated()) {
-            mScoreValue -= 10
+        if (currentQuestion.userCheated) {
+            score -= 10
         }
         else {
-            if (correct)
-                mScoreValue++
-            else
-                mScoreValue--
+            if (correct) score++
+            else score--
         }
-        //progressQuestion();
+
         return correct
     }
 
