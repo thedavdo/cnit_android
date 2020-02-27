@@ -55,13 +55,13 @@ class CheatActivity : AppCompatActivity() {
 
         val builder = AlertDialog.Builder(this)
         builder.setMessage(R.string.dialog_cheat_inform)
-        builder.setPositiveButton(R.string.dialog_cheat_confirm) { dialog, id ->
+        builder.setPositiveButton(R.string.dialog_cheat_confirm) { _, _ ->
 
             showAnswer = true
             updateIntent()
             updateDisplay()
         }
-        builder.setNegativeButton(R.string.dialog_cheat_deny) { dialog, id ->
+        builder.setNegativeButton(R.string.dialog_cheat_deny) { _, _ ->
             updateIntent()
             finish()
         }
@@ -97,12 +97,12 @@ class CheatActivity : AppCompatActivity() {
         Log.i(mLogTag, "onSaveInstanceState")
 
         savedInstanceState.putParcelable(QUESTION_INDEX, mQuestion)
-        savedInstanceState.putByte(ANSWER_INDEX, (if (showAnswer) 1 else 0).toByte())
+        savedInstanceState.putByte(ANSWER_INDEX, (if(showAnswer) 1 else 0).toByte())
     }
 
     private fun updateIntent() {
 
-        dataCallback?.putExtra(ANSWER_INDEX, (if (showAnswer) 1 else 0).toByte())
+        dataCallback?.putExtra(ANSWER_INDEX, (if(showAnswer) 1 else 0).toByte())
         setResult(Activity.RESULT_OK, dataCallback)
     }
 

@@ -64,13 +64,12 @@ class MainActivity : AppCompatActivity() {
         mCheatDisplay = Intent(this@MainActivity, CheatActivity::class.java)
 
         val dialogBuilder = AlertDialog.Builder(this)
-        dialogBuilder.setMessage(R.string.dialog_reset_inform);
-        dialogBuilder.setPositiveButton(R.string.dialog_reset_confirm) { dialog, id ->
-
+        dialogBuilder.setMessage(R.string.dialog_reset_inform)
+        dialogBuilder.setPositiveButton(R.string.dialog_reset_confirm) { _,_ ->
             mQuizObj.resetQuiz()
             updateQuestionDisplay()
         }
-        dialogBuilder.setNegativeButton(R.string.dialog_reset_deny) { dialog, id -> }
+        dialogBuilder.setNegativeButton(R.string.dialog_reset_deny) { _,_ -> }
 
         mConfirmReset = dialogBuilder.create()
 
@@ -108,7 +107,11 @@ class MainActivity : AppCompatActivity() {
 
 
         if (savedInstanceState != null) {
-            mQuizObj = savedInstanceState.getParcelable(mQuizIndex)!!
+
+            val bundleQuiz: Quiz? = savedInstanceState.getParcelable(mQuizIndex)
+
+            if(bundleQuiz != null) mQuizObj = bundleQuiz
+
             Log.d(mLogTag, "Loading Parcelable!!!")
         }
         else {

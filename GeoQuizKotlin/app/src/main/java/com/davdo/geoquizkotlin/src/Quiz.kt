@@ -117,7 +117,7 @@ class Quiz() : Parcelable {
         val correct = getCurrentQuestion().isUserCorrect()
 
         if (getCurrentQuestion().hasUserCheated()) {
-            mScoreValue = mScoreValue - 10
+            mScoreValue -= 10
         }
         else {
             if (correct)
