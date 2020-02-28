@@ -19,10 +19,10 @@ import com.davdo.todolistkotlin.src.Note
 import java.util.*
 
 
-private const val noteIndex = "NOTE_OBJ"
-private const val notTag = "NOTE_TAG"
-
 class NoteFragment : Fragment() {
+
+    private val noteIndex = "NOTE_OBJ"
+    private val noteTag = "NOTE_TAG"
 
     private lateinit var cal: Calendar
 
@@ -64,6 +64,7 @@ class NoteFragment : Fragment() {
 
         mTitleField?.setText(mNote.title)
         mDateButton?.text = (mNote.date.toString())
+
         mDoneCheckbox?.isChecked = mNote.done
 
 
@@ -77,7 +78,7 @@ class NoteFragment : Fragment() {
         })
 
         mTitleField?.setOnEditorActionListener { _, actionId, _ ->
-            //Log.d(TAG, "onEditorAction() called: " + textView.getText());
+
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 mTitleField?.clearFocus()
             }

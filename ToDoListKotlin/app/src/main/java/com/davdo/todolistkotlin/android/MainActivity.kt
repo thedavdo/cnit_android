@@ -16,6 +16,7 @@ class MainActivity : AppCompatActivity() {
 
         if(myFragment == null) {
             myFragment = NoteFragment()
+            //myFragment = NoteListFragment()
             supportFragmentManager.beginTransaction().add(R.id.fragment_note_container, myFragment).commit()
         }
     }

@@ -15,6 +15,8 @@ class Note : Parcelable {
 
     constructor(id: UUID) : this(null,null,  null, id)
 
+    constructor(title: String, date: Date, done:Boolean) : this(title, date, done, null)
+
     constructor(title: String?, date: Date?, done:Boolean?, id: UUID?) {
 
         if(title != null) this.title = title
