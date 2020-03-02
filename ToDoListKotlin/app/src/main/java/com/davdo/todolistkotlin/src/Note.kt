@@ -2,34 +2,33 @@ package com.davdo.todolistkotlin.src
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.*
 
-class Note : Parcelable {
+@Entity
+data class Note(@PrimaryKey var uuid: UUID) : Parcelable {
 
-    var uuid: UUID
     var title: String
     var date: Date
     var done: Boolean
 
-    constructor(): this(null,null,null,null)
+    init {
+        this.title = ""
+        this.date = Date()
+        this.done = false
+    }
 
-    constructor(id: UUID) : this(null,null,  null, id)
+    constructor(): this(null,null,null,null)
 
     constructor(title: String, date: Date, done:Boolean) : this(title, date, done, null)
 
-    constructor(title: String?, date: Date?, done:Boolean?, id: UUID?) {
+    constructor(title: String?, date: Date?, done:Boolean?, id: UUID?) : this(UUID.randomUUID()) {
 
         if(title != null) this.title = title
-        else this.title = ""
-
         if(date != null) this.date = date
-        else this.date = Date()
-
         if(done != null) this.done = done
-        else this.done = false
-
         if(id != null) this.uuid = id
-        else this.uuid = UUID.randomUUID()
     }
 
     private constructor(parcel: Parcel) : this(parcel.readString(), Date(parcel.readLong()), (parcel.readInt() == 1), UUID.fromString(parcel.readString()))
