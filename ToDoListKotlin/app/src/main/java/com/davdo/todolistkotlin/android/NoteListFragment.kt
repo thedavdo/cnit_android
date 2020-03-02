@@ -1,5 +1,7 @@
 package com.davdo.todolistkotlin.android
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,13 +13,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.davdo.todolistkotlin.R
 import com.davdo.todolistkotlin.src.Note
+import java.util.*
 
+
+const val SaveNoteIndex = "save_note"
+const val EditNoteIndex = "edit_uuid"
 
 class NoteListFragment : Fragment() {
 
+    private val mEditRequestCode = 0
 
     private lateinit var noteRecyclerView: RecyclerView
     private lateinit var noteListViewModel: NoteListViewModel
+
+    private lateinit var mEditNoteDisplay: Intent
 
     private var adapter : NoteAdapter? = null
 
@@ -25,7 +34,9 @@ class NoteListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         noteListViewModel = ViewModelProvider(this).get(NoteListViewModel::class.java)
-        noteListViewModel.generateExamples()
+//        noteListViewModel.generateExamples()
+
+        mEditNoteDisplay = Intent(activity, EditNoteActivity::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,6 +57,39 @@ class NoteListFragment : Fragment() {
         noteRecyclerView.adapter = adapter
     }
 
+    fun addNote(note: Note) {
+        noteListViewModel.notes[note.uuid] = note
+        adapter?.notifyDataSetChanged()
+    }
+
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == mEditRequestCode && resultCode == Activity.RESULT_OK) {
+
+            val save : Int? = data?.getIntExtra(SaveNoteIndex, 0)
+            val resNote: Note? = data?.getParcelableExtra(EditNoteIndex)
+
+            if(resNote != null) {
+                when {
+                    (save == EditNoteActivity.ActionSave) -> {
+                        noteListViewModel.notes[resNote.uuid]?.title = resNote.title
+                        noteListViewModel.notes[resNote.uuid]?.date = resNote.date
+                        noteListViewModel.notes[resNote.uuid]?.done = resNote.done
+
+                        noteRecyclerView.adapter?.notifyDataSetChanged()
+                    }
+                    (save == EditNoteActivity.ActionRemove) -> {
+                        noteListViewModel.notes.remove(resNote.uuid)
+                        adapter?.notifyDataSetChanged()
+                    }
+                }
+            }
+        }
+    }
+
     private inner class NoteHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
 
         val titleTextView : TextView = itemView.findViewById(R.id.note_title)
@@ -63,24 +107,30 @@ class NoteListFragment : Fragment() {
         }
 
         override fun onClick(v: View?) {
-
+            mEditNoteDisplay.putExtra(EditNoteIndex, note)
+            startActivityForResult(mEditNoteDisplay, mEditRequestCode)
         }
     }
 
-    private inner class NoteAdapter(var notes : List<Note>) : RecyclerView.Adapter<NoteHolder>() {
+    private inner class NoteAdapter(var notes: MutableMap<UUID, Note>) : RecyclerView.Adapter<NoteHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteHolder {
             val view = layoutInflater.inflate(R.layout.list_item_note, parent, false)
             return NoteHolder(view)
         }
 
+        override fun onBindViewHolder(holder: NoteHolder, position: Int) {
+
+            val id: UUID = notes.keys.asSequence().elementAt(position)
+
+            val note : Note? = notes[id]
+
+            if(note != null)
+                holder.bind(note)
+        }
+
         override fun getItemCount(): Int {
             return notes.size
         }
-
-        override fun onBindViewHolder(holder: NoteHolder, position: Int) {
-            holder.bind(notes[position])
-        }
-
     }
 }

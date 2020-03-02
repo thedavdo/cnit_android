@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(fragment == null) {
 
-            fragment = new NoteFragment();
-//            fragment = new NoteListFragment();
+//            fragment = new NoteFragment();
+            fragment = new NoteListFragment();
 
 //            Bundle testBundle = new Bundle();
 //            testBundle.putParcelable(NoteFragment.NOTE_INDEX, note);

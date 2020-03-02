@@ -30,7 +30,11 @@ class NoteFragment : Fragment() {
     private var mDateButton: Button? = null
     private var mDoneCheckbox: CheckBox? = null
 
-    private lateinit var mNote: Note
+    var mChangesMade: Boolean = false
+        private set
+
+    lateinit var mNote: Note
+        private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +58,7 @@ class NoteFragment : Fragment() {
        val v = inflater.inflate(R.layout.fragment_note, container, false)
 
         if(arguments != null) {
-            val parNote: Note? = arguments?.getParcelable(noteIndex)
+            val parNote: Note? = arguments?.getParcelable(EditNoteIndex)
             if(parNote != null) mNote = parNote
         }
 
@@ -71,6 +75,7 @@ class NoteFragment : Fragment() {
         mTitleField?.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 mNote.title = s.toString()
+                mChangesMade = true
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -87,16 +92,17 @@ class NoteFragment : Fragment() {
 
         mDoneCheckbox?.setOnCheckedChangeListener { _, isChecked ->
             mNote.done = isChecked
+            mChangesMade = true
         }
 
         val dateListener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            cal[Calendar.YEAR] = year
+            cal[Calendar.MONTH] = monthOfYear
+            cal[Calendar.DAY_OF_MONTH] = dayOfMonth
 
-                cal[Calendar.YEAR] = year
-                cal[Calendar.MONTH] = monthOfYear
-                cal[Calendar.DAY_OF_MONTH] = dayOfMonth
-
-                mNote.date.time = cal.time.time
-                mDateButton?.text = mNote.date.toString()
+            mNote.date.time = cal.time.time
+            mDateButton?.text = mNote.date.toString()
+            mChangesMade = true
         }
 
         mDateButton?.setOnClickListener {

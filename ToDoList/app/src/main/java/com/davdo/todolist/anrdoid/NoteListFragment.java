@@ -74,17 +74,13 @@ public class NoteListFragment extends Fragment {
 
             if(note != null) {
                 mNote = note;
-
                 mTitleText.setText(note.getTitle());
                 mDateText.setText(note.getDate().toString());
-
             }
         }
 
         @Override
-        public void onClick(View v) {
-
-        }
+        public void onClick(View v) {}
     }
 
     private class NoteAdapter extends RecyclerView.Adapter {

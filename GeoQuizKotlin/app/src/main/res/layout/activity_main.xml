@@ -83,9 +83,9 @@
         android:layout_marginStart="256dp"
         android:layout_marginEnd="24dp"
         android:backgroundTint="@color/button_skip"
+        app:backgroundTint="@color/button_skip"
         android:src="@drawable/arrow_right"
         android:visibility="visible"
-        app:backgroundTint="@color/button_skip"
         app:layout_constraintBottom_toBottomOf="@+id/button_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_back"
@@ -97,7 +97,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/button_back"
         android:src="@drawable/arrow_left"
