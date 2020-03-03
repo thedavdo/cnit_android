@@ -1,88 +1,70 @@
 package com.davdo.todolistkotlin.android
 
-import android.app.Activity
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.davdo.todolistkotlin.R
-import com.davdo.todolistkotlin.src.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
 
-const val CreateNoteIndex = "save_note"
+class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 
-class MainActivity : AppCompatActivity() {
+	private var addNewNoteButton : FloatingActionButton? = null
 
-    private val mCreateRequestCode = 0
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
 
-    private var addNewNoteButton : FloatingActionButton? = null
+		addNewNoteButton = findViewById(R.id.fab_add_note)
 
-    private var mNoteList : NoteListFragment? = null
+		addNewNoteButton?.setOnClickListener {
 
-    private lateinit var mNewNoteDisplay: Intent
+			val frag = NoteFragment()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+			supportFragmentManager.beginTransaction()
+				.replace(R.id.fragment_container, frag)
+				.addToBackStack(null)
+				.commit()
+		}
 
-        mNewNoteDisplay = Intent(this, EditNoteActivity::class.java)
+		var frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
-        addNewNoteButton = findViewById(R.id.fab_add_note)
+		if(frag == null) {
+			frag = NoteListFragment()
+			supportFragmentManager.beginTransaction().add(R.id.fragment_container, frag).commit()
+		}
+	}
 
-        addNewNoteButton?.setOnClickListener {
+	override fun onNoteSelected(noteID: UUID) {
 
-//            mNewNoteDisplay
-            mNewNoteDisplay.putExtra(EditNoteIndex, Note())
-            startActivityForResult(mNewNoteDisplay, mCreateRequestCode)
-        }
+		val fragment = NoteFragment.newInstance(noteID)
 
-        val frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_note_container)
+		supportFragmentManager.beginTransaction()
+			.replace(R.id.fragment_container, fragment)
+			.addToBackStack(null)
+			.commit()
+	}
 
-//        mNoteList =
+//	private fun showEdit
 
-        if(frag == null) {
-//            myFragment = NoteFragment()
-            mNoteList = NoteListFragment()
-
-            supportFragmentManager.beginTransaction().add(R.id.fragment_note_container, mNoteList!!).commit()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == mCreateRequestCode) {
-            if (resultCode == Activity.RESULT_OK) {
-
-                val save : Int? = data?.getIntExtra(SaveNoteIndex, EditNoteActivity.ActionNone)
-                val resNote: Note? = data?.getParcelableExtra(EditNoteIndex)
-
-//                Toast.makeText(this, "$save", Toast.LENGTH_SHORT).show()
-
-                if(resNote != null) {
-
-                    when {
-                        (save == EditNoteActivity.ActionSave) -> {
-                            mNoteList?.addNote(resNote)
-                        }
-                    }
-                }
-
-
-
-               // if(save == 1) {
-
-//                        noteListViewModel.notes[resNote.uuid]?.title = resNote.title
-//                        noteListViewModel.notes[resNote.uuid]?.date = resNote.date
-//                        noteListViewModel.notes[resNote.uuid]?.done = resNote.done
+//	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//		super.onActivityResult(requestCode, resultCode, data)
 //
-//                        noteRecyclerView.adapter?.notifyDataSetChanged()
-
-//                        mNoteList?.noteListViewModel!!.notes[resNote.uuid] = resNote
-
-//                    }
-//                }
-            }
-        }
-    }
+//		if (requestCode == mCreateRequestCode) {
+//			if (resultCode == Activity.RESULT_OK) {
+//
+////				val save : Int? = data?.getIntExtra(SaveNoteIndex, EditNoteActivity.ActionNone)
+////				val resNote: Note? = data?.getParcelableExtra(EditNoteIndex)
+//
+////				if(resNote != null) {
+////
+////					when {
+////						(save == EditNoteActivity.ActionSave) -> {
+////
+////						}
+////					}
+////				}
+//			}
+//		}
+//	}
 }

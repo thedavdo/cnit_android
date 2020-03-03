@@ -3,12 +3,13 @@
     package="com.davdo.todolistkotlin">
 
     <application
+        android:name=".android.TodoListIntentApplication"
         android:allowBackup="true"
         android:icon="@mipmap/my_launcher"
-
         android:roundIcon="@mipmap/my_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".android.MainActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,8 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".android.EditNoteActivity" android:label="@string/activity_edit_note">
         </activity>
+
     </application>
 
 </manifest>
