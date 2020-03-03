@@ -1,10 +1,7 @@
 package com.davdo.todolistkotlin.db
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.davdo.todolistkotlin.src.Note
 import java.util.*
 
@@ -22,4 +19,7 @@ interface NoteDAO {
 
 	@Insert
 	fun addNote(note: Note)
+
+	@Delete
+	fun deleteNote(note: Note)
 }

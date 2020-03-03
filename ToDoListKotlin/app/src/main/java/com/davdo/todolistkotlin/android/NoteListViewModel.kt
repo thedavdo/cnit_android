@@ -12,43 +12,27 @@ import kotlin.math.abs
 
 class NoteListViewModel : ViewModel() {
 
-	//val notes = mutableMapOf<UUID, Note>() //mutableListOf<Note>()
     private val noteRepository = NoteRepository.get()
     val noteListLiveData = noteRepository.getNotes()
 
-	private val noteIDLiveData = MutableLiveData<UUID>()
-
-	var noteLiveData: LiveData<Note?> = Transformations.switchMap(noteIDLiveData) { noteID ->
-		noteRepository.getNote(noteID)
+	fun addNote(note: Note) {
+		noteRepository.addNote(note)
 	}
 
-	fun loadNote(noteID: UUID) {
-		noteIDLiveData.value = noteID
+	fun deleteNote(note: Note) {
+		noteRepository.deleteNote(note)
 	}
-
-	fun saveNote(note: Note) {
-		noteRepository.updateNote(note)
-	}
-
-	fun getNote(uuid: UUID): Note? {
-		return noteRepository.getNote(uuid).value
-	}
-
 
 	fun generateExamples() {
 
 		val cal: Calendar = Calendar.getInstance()
-		val r = Random()
-
-//		val countNotes: Int = noteListLiveData. .size + 1
+		val rnd = Random()
 
 		for (i in 1 until 20) {
-			cal.timeInMillis = abs(r.nextLong())
-			val tempNote = Note("My Note #$i", cal.time, r.nextBoolean())
+			cal.timeInMillis = abs(rnd.nextLong())
+			val tempNote = Note("My Note #${rnd.nextInt()}", cal.time, rnd.nextBoolean())
 
 			noteRepository.addNote(tempNote)
-//			notes[tempNote.uuid] = tempNote
 		}
-
 	}
 }

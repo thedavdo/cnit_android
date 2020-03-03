@@ -2,30 +2,22 @@ package com.davdo.todolistkotlin.android
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.davdo.todolistkotlin.R
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 
-	private var addNewNoteButton : FloatingActionButton? = null
+	private var mActionBar: ActionBar? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
-		addNewNoteButton = findViewById(R.id.fab_add_note)
-
-		addNewNoteButton?.setOnClickListener {
-
-			val frag = NoteFragment()
-
-			supportFragmentManager.beginTransaction()
-				.replace(R.id.fragment_container, frag)
-				.addToBackStack(null)
-				.commit()
-		}
+		mActionBar = supportActionBar
 
 		var frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
@@ -36,35 +28,39 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 	}
 
 	override fun onNoteSelected(noteID: UUID) {
-
-		val fragment = NoteFragment.newInstance(noteID)
-
-		supportFragmentManager.beginTransaction()
-			.replace(R.id.fragment_container, fragment)
-			.addToBackStack(null)
-			.commit()
+		openNoteFragment(noteID)
 	}
 
-//	private fun showEdit
+	override fun onAddNoteSelected() {
+		openNoteFragment(null)
+	}
 
-//	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//		super.onActivityResult(requestCode, resultCode, data)
-//
-//		if (requestCode == mCreateRequestCode) {
-//			if (resultCode == Activity.RESULT_OK) {
-//
-////				val save : Int? = data?.getIntExtra(SaveNoteIndex, EditNoteActivity.ActionNone)
-////				val resNote: Note? = data?.getParcelableExtra(EditNoteIndex)
-//
-////				if(resNote != null) {
-////
-////					when {
-////						(save == EditNoteActivity.ActionSave) -> {
-////
-////						}
-////					}
-////				}
-//			}
-//		}
-//	}
+	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+		if(item.itemId == android.R.id.home) {
+			mActionBar?.setDisplayHomeAsUpEnabled(false)
+			mActionBar?.setDisplayShowHomeEnabled(false)
+			supportFragmentManager.popBackStack()
+			return true
+		}
+
+		return super.onOptionsItemSelected(item)
+	}
+
+	private fun openNoteFragment(noteID: UUID?) {
+
+		val frag : NoteFragment = if(noteID != null) NoteFragment.newInstance(noteID)
+		else NoteFragment()
+
+		supportFragmentManager.beginTransaction()
+			.replace(R.id.fragment_container, frag)
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+			.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+			.addToBackStack(null)
+			.commit()
+
+		mActionBar?.setDisplayHomeAsUpEnabled(true)
+		mActionBar?.setDisplayShowHomeEnabled(true)
+	}
+
 }

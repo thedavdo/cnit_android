@@ -2,18 +2,23 @@ package com.davdo.todolistkotlin.android
 
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.davdo.todolistkotlin.R
 import com.davdo.todolistkotlin.src.Note
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 
@@ -21,14 +26,16 @@ class NoteListFragment : Fragment() {
 
 	interface Callbacks {
 		fun onNoteSelected(noteID: UUID)
+		fun onAddNoteSelected()
 	}
+
+	private var callbacks: Callbacks? = null
 
 	private lateinit var noteRecyclerView: RecyclerView
 	private lateinit var noteListViewModel: NoteListViewModel
-
 	private var adapter : NoteAdapter? = NoteAdapter(emptyList())
 
-	private var callbacks: Callbacks? = null
+	private var floatingActionButton : FloatingActionButton? = null
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
@@ -46,7 +53,6 @@ class NoteListFragment : Fragment() {
 		super.onCreate(savedInstanceState)
 
 		noteListViewModel = ViewModelProvider(this).get(NoteListViewModel::class.java)
-
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,11 +62,28 @@ class NoteListFragment : Fragment() {
 		noteRecyclerView = view.findViewById(R.id.note_recycler_view)
 		noteRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        noteRecyclerView.adapter = adapter
+		noteRecyclerView.adapter = adapter
+
+		floatingActionButton = view.findViewById(R.id.fab_add_note)
+
+		floatingActionButton?.setOnClickListener {
+			callbacks?.onAddNoteSelected()
+		}
+
+		noteRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+
+			override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+				super.onScrolled(recyclerView, dx, dy)
+
+				if(dy > 0)
+					floatingActionButton?.hide()
+				else
+					floatingActionButton?.show()
+			}
+		})
 
 		return view
 	}
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -82,6 +105,7 @@ class NoteListFragment : Fragment() {
 
 		val titleTextView : TextView = itemView.findViewById(R.id.note_title)
 		val dateTextView : TextView = itemView.findViewById(R.id.note_date)
+		val displayDoneImage: ImageView = itemView.findViewById(R.id.note_done)
 		lateinit var note : Note
 
 		init {
@@ -92,6 +116,7 @@ class NoteListFragment : Fragment() {
 			note = newNote
 			titleTextView.text = note.title
 			dateTextView.text = note.date.toString()
+			displayDoneImage.visibility = if(note.done) View.VISIBLE else View.INVISIBLE
 		}
 
 		override fun onClick(v: View?) {

@@ -36,6 +36,12 @@ class NoteRepository private constructor(context: Context) {
 		}
 	}
 
+	fun deleteNote(note: Note) {
+		executor.execute {
+			noteDAO.deleteNote(note)
+		}
+	}
+
 	//Singleton :(
 	companion object {
 

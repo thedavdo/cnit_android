@@ -13,6 +13,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.davdo.todolistkotlin.R
@@ -24,24 +26,24 @@ import java.util.*
 class NoteFragment : Fragment() {
 
 	private lateinit var noteListViewModel: NoteListViewModel
+	private lateinit var noteDetailViewModel: NoteDetailViewModel
 
 	private var mTitleField: EditText? = null
 	private var mDateButton: Button? = null
 	private var mDoneCheckbox: CheckBox? = null
 
-	var mChangesMade: Boolean = false
-		private set
-
 	private lateinit var cal: Calendar
 
 	private var mNote: Note? = null
 
+	private var mChangesMade: Boolean = false
 	private var mNewNote: Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
 		noteListViewModel = ViewModelProvider(this).get(NoteListViewModel::class.java)
+		noteDetailViewModel = ViewModelProvider(this).get(NoteDetailViewModel::class.java)
 
 		cal = Calendar.getInstance()
 
@@ -49,7 +51,7 @@ class NoteFragment : Fragment() {
 
 		if(argID != null) {
 			val noteID: UUID = argID as UUID
-			noteListViewModel.loadNote(noteID)
+			noteDetailViewModel.loadNote(noteID)
 		}
 		else {
 			mNote = Note()
@@ -57,9 +59,20 @@ class NoteFragment : Fragment() {
 		}
 	}
 
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+
+		noteDetailViewModel.noteLiveData.observe(viewLifecycleOwner, Observer { note ->
+
+			note?.let {
+				this.mNote = note
+				updateUI()
+			}
+		})
+	}
+
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
-
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -127,19 +140,6 @@ class NoteFragment : Fragment() {
 		return v
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
-
-		noteListViewModel.noteLiveData.observe(viewLifecycleOwner, Observer { note ->
-
-			note?.let {
-				this.mNote = note
-				updateUI()
-			}
-
-		})
-	}
-
 	override fun onStart() {
 		super.onStart()
 
@@ -148,11 +148,19 @@ class NoteFragment : Fragment() {
 	override fun onStop() {
 		super.onStop()
 
-		if(mNote != null) noteListViewModel.saveNote(mNote!!)
+		if(mNote != null) {
+			if(mNewNote) {
+				noteListViewModel.addNote(mNote!!)
+			}
+			else {
+				noteDetailViewModel.updateNote(mNote!!)
+			}
+		}
 	}
 
 	private fun updateUI() {
 		mTitleField?.setText(mNote?.title)
+		mTitleField?.jumpDrawablesToCurrentState()
 		mDateButton?.text = mNote?.date.toString()
 		mDoneCheckbox?.isChecked = mNote?.done ?: false
 		mDoneCheckbox?.jumpDrawablesToCurrentState()
