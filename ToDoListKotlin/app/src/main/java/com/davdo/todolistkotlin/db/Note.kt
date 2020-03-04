@@ -1,4 +1,4 @@
-package com.davdo.todolistkotlin.src
+package com.davdo.todolistkotlin.db
 
 import android.os.Parcel
 import android.os.Parcelable
