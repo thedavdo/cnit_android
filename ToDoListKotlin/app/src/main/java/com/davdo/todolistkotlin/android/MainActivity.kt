@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 
 		mActionBar = supportActionBar
 
-		var frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
+		val frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
 		if(frag == null) {
 			mNoteListFragment = NoteListFragment()
@@ -81,5 +81,4 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 
 		setShowBackHome(true)
 	}
-
 }

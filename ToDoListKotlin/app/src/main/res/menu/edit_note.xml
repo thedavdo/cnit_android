@@ -7,4 +7,9 @@
         android:checkable="false"
         android:title="@string/menu_button_delete"
         android:visible="true" />
+
+    <item
+        android:id="@+id/menu_button_save_note"
+        android:title="@string/menu_button_save"
+        app:showAsAction="ifRoom|withText"/>
 </menu>

@@ -28,16 +28,14 @@ class NoteFragment : Fragment() {
 	private var mDoneCheckbox: CheckBox? = null
 
 	private var mConfirmSave: AlertDialog? = null
-
 	private var mConfirmDelete: AlertDialog? = null
 
 	private lateinit var cal: Calendar
 
 	private var mNote: Note? = null
+	private var mChangeDate : Long? = null
 
 	private var mNewNote: Boolean = false
-
-	private var mChangeDate : Long? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -64,9 +62,11 @@ class NoteFragment : Fragment() {
 	override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 		super.onCreateOptionsMenu(menu, inflater)
 
-		if(!mNewNote) {
-			menu.clear()
-			inflater.inflate(R.menu.edit_note, menu)
+		menu.clear()
+		inflater.inflate(R.menu.edit_note, menu)
+
+		if(mNewNote) {
+			menu.findItem(R.id.menu_button_delete_note).isVisible = false
 		}
 	}
 
@@ -74,6 +74,10 @@ class NoteFragment : Fragment() {
 
 		if(item.itemId == R.id.menu_button_delete_note) {
 			mConfirmDelete?.show()
+		}
+		else if(item.itemId == R.id.menu_button_save_note) {
+			doSave()
+			activity?.onBackPressed()
 		}
 
 		return super.onOptionsItemSelected(item)
@@ -85,7 +89,7 @@ class NoteFragment : Fragment() {
 		noteDetailViewModel.noteLiveData.observe(viewLifecycleOwner, Observer { note ->
 
 			note?.let {
-				this.mNote = note
+				this.mNote = it
 				updateUI()
 			}
 		})
@@ -187,12 +191,8 @@ class NoteFragment : Fragment() {
 			mNote?.done = mDoneCheckbox?.isChecked ?: mNote?.done!!
 			mNote?.date?.time = mChangeDate ?: mNote?.date?.time!!
 
-			if(mNewNote) {
-				noteListViewModel.addNote(mNote!!)
-			}
-			else {
-				noteDetailViewModel.updateNote(mNote!!)
-			}
+			if(mNewNote) noteListViewModel.addNote(mNote!!)
+			else noteDetailViewModel.updateNote(mNote!!)
 		}
 	}
 

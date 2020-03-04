@@ -6,6 +6,7 @@
     <string name="hint_note_title">Enter a title for the note.</string>
 
     <string name="menu_button_delete">Delete Note</string>
+    <string name="menu_button_save">Save</string>
 
     <string name="dialog_edit_prompt">Save changes?</string>
 
