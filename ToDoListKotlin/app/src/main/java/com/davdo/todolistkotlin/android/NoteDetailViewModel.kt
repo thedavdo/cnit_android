@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.davdo.todolistkotlin.db.NoteRepository
-import com.davdo.todolistkotlin.src.Note
+import com.davdo.todolistkotlin.db.Note
 import java.util.*
 
 class NoteDetailViewModel() : ViewModel() {

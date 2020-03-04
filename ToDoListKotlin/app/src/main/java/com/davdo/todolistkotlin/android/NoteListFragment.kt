@@ -2,22 +2,19 @@ package com.davdo.todolistkotlin.android
 
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.davdo.todolistkotlin.R
-import com.davdo.todolistkotlin.src.Note
+import com.davdo.todolistkotlin.db.Note
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 

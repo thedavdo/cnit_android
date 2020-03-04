@@ -1,12 +1,8 @@
 package com.davdo.todolistkotlin.android
 
-import android.content.Intent
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.davdo.todolistkotlin.db.NoteRepository
-import com.davdo.todolistkotlin.src.Note
+import com.davdo.todolistkotlin.db.Note
 import java.util.*
 import kotlin.math.abs
 
@@ -30,7 +26,11 @@ class NoteListViewModel : ViewModel() {
 
 		for (i in 1 until 20) {
 			cal.timeInMillis = abs(rnd.nextLong())
-			val tempNote = Note("My Note #${rnd.nextInt()}", cal.time, rnd.nextBoolean())
+			val tempNote = Note(
+				"My Note #${rnd.nextInt()}",
+				cal.time,
+				rnd.nextBoolean()
+			)
 
 			noteRepository.addNote(tempNote)
 		}

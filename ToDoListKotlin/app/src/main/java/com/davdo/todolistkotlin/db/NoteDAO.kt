@@ -2,7 +2,6 @@ package com.davdo.todolistkotlin.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.davdo.todolistkotlin.src.Note
 import java.util.*
 
 @Dao
