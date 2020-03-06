@@ -11,11 +11,10 @@ import java.util.UUID;
 @Entity
 public class Note implements Parcelable {
 
-    private UUID mId;
     private String mTitle;
     private Date mDate;
-
     private boolean mDone;
+    private UUID mId;
 
     public Note() {
         this(UUID.randomUUID());

@@ -4,15 +4,22 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.davdo.todolistkotlin.R
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 
 class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 
-	private var mActionBar: ActionBar? = null
+	private var mAppBar: AppBarLayout? = null
+	private var mToolbar: Toolbar? = null
+	private var mActionbar : ActionBar? = null
+
+	private var floatingActionButton : FloatingActionButton? = null
 
 	private var mNoteListFragment : NoteListFragment? = null
 	private var mNoteFragment : NoteFragment? = null
@@ -21,7 +28,17 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
-		mActionBar = supportActionBar
+		mAppBar = findViewById(R.id.appbar)
+		mToolbar = findViewById(R.id.toolbar)
+
+		setSupportActionBar(mToolbar)
+		mActionbar = supportActionBar
+
+		floatingActionButton = findViewById(R.id.fab_activity_main)
+
+		floatingActionButton?.setOnClickListener {
+			openNoteFragment(null)
+		}
 
 		val frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
@@ -35,11 +52,6 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 		openNoteFragment(noteID)
 	}
 
-	override fun onAddNoteSelected() {
-		openNoteFragment(null)
-	}
-
-
 	override fun onBackPressed() {
 
 		val prompted: Boolean? = mNoteFragment?.onBackPressed()
@@ -47,6 +59,7 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 		if(prompted == false) {
 			super.onBackPressed()
 			setShowBackHome(false)
+			floatingActionButton?.show()
 			supportFragmentManager.popBackStack()
 		}
 	}
@@ -62,10 +75,9 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 	}
 
 	private fun setShowBackHome(show: Boolean) {
-		mActionBar?.setDisplayHomeAsUpEnabled(show)
-		mActionBar?.setDisplayShowHomeEnabled(show)
+		mActionbar?.setDisplayHomeAsUpEnabled(show)
+		mActionbar?.setDisplayShowHomeEnabled(show)
 	}
-
 
 	private fun openNoteFragment(noteID: UUID?) {
 
@@ -80,5 +92,7 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 			.commit()
 
 		setShowBackHome(true)
+		mAppBar?.setExpanded(true, true)
+		floatingActionButton?.hide()
 	}
 }

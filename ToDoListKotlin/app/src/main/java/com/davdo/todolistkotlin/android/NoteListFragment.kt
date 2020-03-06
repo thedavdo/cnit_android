@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.davdo.todolistkotlin.R
 import com.davdo.todolistkotlin.db.Note
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.*
 
 
@@ -23,7 +22,6 @@ class NoteListFragment : Fragment() {
 
 	interface Callbacks {
 		fun onNoteSelected(noteID: UUID)
-		fun onAddNoteSelected()
 	}
 
 	private var callbacks: Callbacks? = null
@@ -31,8 +29,6 @@ class NoteListFragment : Fragment() {
 	private lateinit var noteRecyclerView: RecyclerView
 	private lateinit var noteListViewModel: NoteListViewModel
 	private var adapter : NoteAdapter? = NoteAdapter(emptyList())
-
-	private var floatingActionButton : FloatingActionButton? = null
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
@@ -60,26 +56,6 @@ class NoteListFragment : Fragment() {
 		noteRecyclerView.layoutManager = LinearLayoutManager(context)
 
 		noteRecyclerView.adapter = adapter
-
-		floatingActionButton = view.findViewById(R.id.fab_add_note)
-
-		floatingActionButton?.setOnClickListener {
-			callbacks?.onAddNoteSelected()
-		}
-
-		noteRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-
-			override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-				super.onScrolled(recyclerView, dx, dy)
-
-				if(dy > 0) {
-					floatingActionButton?.hide()
-				}
-				else if (dy < 0) {
-					floatingActionButton?.show()
-				}
-			}
-		})
 
 		return view
 	}
