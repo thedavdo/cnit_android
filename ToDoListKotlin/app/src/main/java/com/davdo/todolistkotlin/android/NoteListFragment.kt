@@ -21,7 +21,7 @@ import java.util.*
 class NoteListFragment : Fragment() {
 
 	interface Callbacks {
-		fun onNoteSelected(noteID: UUID)
+		fun onNoteSelected(noteID: UUID, position: Int)
 	}
 
 	private var callbacks: Callbacks? = null
@@ -81,6 +81,7 @@ class NoteListFragment : Fragment() {
 		val titleTextView : TextView = itemView.findViewById(R.id.note_title)
 		val dateTextView : TextView = itemView.findViewById(R.id.note_date)
 		val displayDoneImage: ImageView = itemView.findViewById(R.id.note_done)
+
 		lateinit var note : Note
 
 		init {
@@ -95,7 +96,7 @@ class NoteListFragment : Fragment() {
 		}
 
 		override fun onClick(v: View?) {
-			callbacks?.onNoteSelected(note.uuid)
+			callbacks?.onNoteSelected(note.uuid, this.layoutPosition)
 		}
 	}
 

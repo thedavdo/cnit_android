@@ -37,26 +37,33 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 		floatingActionButton = findViewById(R.id.fab_activity_main)
 
 		floatingActionButton?.setOnClickListener {
-			openNoteFragment(null)
+			openEditNoteFragment()
 		}
 
-		val frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
+		var frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
 		if(frag == null) {
+			//mNoteListFragment = NoteListFragment()
+
 			mNoteListFragment = NoteListFragment()
-			supportFragmentManager.beginTransaction().add(R.id.fragment_container, mNoteListFragment!!).commit()
+			frag = mNoteListFragment
+
+//			frag = NotePageFragment()
+
+
+			supportFragmentManager.beginTransaction().add(R.id.fragment_container, frag!!).commit()
 		}
 	}
 
-	override fun onNoteSelected(noteID: UUID) {
-		openNoteFragment(noteID)
+	override fun onNoteSelected(noteID: UUID, position: Int) {
+		openNoteFragment(position)
 	}
 
 	override fun onBackPressed() {
 
 		val prompted: Boolean? = mNoteFragment?.onBackPressed()
 
-		if(prompted == false) {
+		if(prompted != true) {
 			super.onBackPressed()
 			setShowBackHome(false)
 			floatingActionButton?.show()
@@ -79,15 +86,32 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 		mActionbar?.setDisplayShowHomeEnabled(show)
 	}
 
-	private fun openNoteFragment(noteID: UUID?) {
+	private fun openEditNoteFragment() {
 
-		mNoteFragment = if(noteID != null) NoteFragment.newInstance(noteID)
-		else NoteFragment()
+		mNoteFragment = NoteFragment()
 
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.fragment_container, mNoteFragment!!)
 			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 			.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+			.addToBackStack(null)
+			.commit()
+
+		setShowBackHome(true)
+		mAppBar?.setExpanded(true, true)
+		floatingActionButton?.hide()
+	}
+
+	private fun openNoteFragment(position: Int) {
+
+//		mNoteFragment = if(noteID != null) NoteFragment.newInstance(noteID)
+//		else NoteFragment()
+		val frag = NotePageFragment.newInstance(position)
+
+		supportFragmentManager.beginTransaction()
+			.replace(R.id.fragment_container, frag)
+//			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//			.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
 			.addToBackStack(null)
 			.commit()
 
