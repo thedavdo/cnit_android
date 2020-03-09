@@ -22,21 +22,24 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
             android:theme="@style/ToolbarTheme"
             app:titleTextAppearance="@style/Toolbar.TitleText">
         </androidx.appcompat.widget.Toolbar>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </FrameLayout>
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_activity_main"
