@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,13 +19,14 @@ import androidx.lifecycle.Observer
 import java.util.*
 
 
-class NoteFragment : Fragment() {
+class NoteFragment : Fragment(), BackPressedListener {
 
 	private lateinit var noteListViewModel: NoteListViewModel
 	private lateinit var noteDetailViewModel: NoteDetailViewModel
 
 	private var mTitleField: EditText? = null
-	private var mDateButton: Button? = null
+
+	private var mDateTextView: TextView? = null
 	private var mDoneCheckbox: CheckBox? = null
 
 	private var mConfirmSave: AlertDialog? = null
@@ -36,6 +38,7 @@ class NoteFragment : Fragment() {
 	private var mChangeDate : Long? = null
 
 	private var mNewNote: Boolean = false
+	private var mReadOnly : Boolean = false
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -48,6 +51,7 @@ class NoteFragment : Fragment() {
 		cal = Calendar.getInstance()
 
 		val argID = arguments?.getSerializable(ARG_NOTE_ID)
+		val argReadOnly = arguments?.getSerializable(ARG_NOTE_READONLY)
 
 		if(argID != null) {
 			val noteID: UUID = argID as UUID
@@ -56,6 +60,10 @@ class NoteFragment : Fragment() {
 		else {
 			mNote = Note()
 			mNewNote = true
+		}
+
+		if(argReadOnly == true) {
+			mReadOnly = true
 		}
 	}
 
@@ -100,8 +108,12 @@ class NoteFragment : Fragment() {
 	   val v = inflater.inflate(R.layout.fragment_note, container, false)
 
 		mTitleField = v.findViewById(R.id.edit_text_title)
-		mDateButton = v.findViewById(R.id.button_date)
 		mDoneCheckbox = v.findViewById(R.id.checkbox_finished)
+		mDateTextView = v.findViewById(R.id.textview_date)
+
+		mTitleField?.isEnabled = !mReadOnly
+		mDateTextView?.isEnabled = !mReadOnly
+		mDoneCheckbox?.isEnabled = !mReadOnly
 
 		val builder = AlertDialog.Builder(inflater.context)
 		builder.setMessage("Save changes?")
@@ -130,7 +142,9 @@ class NoteFragment : Fragment() {
 		mConfirmDelete = deleteBuilder.create()
 
 		mTitleField?.setText(mNote?.title)
-		mDateButton?.text = (mNote?.date.toString())
+
+		mDateTextView?.text = (mNote?.date.toString())
+
 		mDoneCheckbox?.isChecked = mNote?.done ?: false
 		mChangeDate = mNote?.date?.time
 
@@ -148,10 +162,10 @@ class NoteFragment : Fragment() {
 			cal[Calendar.DAY_OF_MONTH] = dayOfMonth
 
 			mChangeDate = cal.time.time
-			mDateButton?.text = mNote?.date.toString()
+			mDateTextView?.text = mNote?.date.toString()
 		}
 
-		mDateButton?.setOnClickListener {
+		mDateTextView?.setOnClickListener {
 
 			cal.time = mNote?.date ?: Date()
 
@@ -169,19 +183,27 @@ class NoteFragment : Fragment() {
 		return v
 	}
 
-	fun onBackPressed(): Boolean {
+	override fun onBackPressed(): Boolean {
 
-		var shouldPrompt = false
-
-		if(mNote != null) {
-			if(!mTitleField?.text?.toString().equals(mNote?.title)) shouldPrompt = true
-			if(mDoneCheckbox?.isChecked != mNote?.done) shouldPrompt = true
-			if(mChangeDate != mNote?.date?.time) shouldPrompt = true
+		if(isChangesMade()) {
+			mConfirmSave?.show()
+			return true
 		}
 
-		if(shouldPrompt) mConfirmSave?.show()
+		return false
+	}
 
-		return shouldPrompt
+	fun isChangesMade(): Boolean {
+
+		var changed = false
+
+		if(mNote != null) {
+			if(!mTitleField?.text?.toString().equals(mNote?.title)) changed = true
+			if(mDoneCheckbox?.isChecked != mNote?.done) changed = true
+			if(mChangeDate != mNote?.date?.time) changed = true
+		}
+
+		return changed
 	}
 
 	private fun doSave() {
@@ -200,7 +222,7 @@ class NoteFragment : Fragment() {
 		mTitleField?.setText(mNote?.title)
 
 		mChangeDate = mNote?.date?.time
-		mDateButton?.text = mNote?.date.toString()
+		mDateTextView?.text = mNote?.date.toString()
 		mDoneCheckbox?.isChecked = mNote?.done ?: false
 
 		mTitleField?.jumpDrawablesToCurrentState()
@@ -210,10 +232,21 @@ class NoteFragment : Fragment() {
 	companion object {
 
 		private const val ARG_NOTE_ID: String = "note_id"
+		private const val ARG_NOTE_READONLY: String = "note_readonly"
 
 		fun newInstance(noteID: UUID): NoteFragment {
 
 			val args = Bundle().apply { putSerializable(ARG_NOTE_ID, noteID) }
+			return NoteFragment().apply { arguments = args }
+		}
+
+		fun newInstance(noteID: UUID, readOnly: Boolean): NoteFragment {
+
+			val args = Bundle().apply {
+				putSerializable(ARG_NOTE_ID, noteID)
+				putSerializable(ARG_NOTE_READONLY, readOnly)
+			}
+
 			return NoteFragment().apply { arguments = args }
 		}
 	}

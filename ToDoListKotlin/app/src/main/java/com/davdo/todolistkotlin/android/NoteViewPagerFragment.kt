@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -12,13 +11,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.davdo.todolistkotlin.R
 import com.davdo.todolistkotlin.db.Note
-import java.util.*
 
 
-class NotePageFragment : Fragment() {
+class NoteViewPagerFragment : Fragment(), BackPressedListener {
 
 	private lateinit var viewPager: ViewPager2
-
 	private lateinit var noteListViewModel: NoteListViewModel
 
 	private var startPos = -1
@@ -28,12 +25,11 @@ class NotePageFragment : Fragment() {
 
 		noteListViewModel = ViewModelProvider(this).get(NoteListViewModel::class.java)
 
-		val argIndex = arguments?.getSerializable(NotePageFragment.ARG_NOTE_INDEX)
+		val argIndex = arguments?.getSerializable(ARG_NOTE_INDEX)
 
 		if(argIndex != null) {
 			startPos = argIndex as Int
 		}
-
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,6 +37,10 @@ class NotePageFragment : Fragment() {
 		val v: View = inflater.inflate(R.layout.fragment_note_view_pager, container, false)
 
 		viewPager = v.findViewById(R.id.viewpager2)
+
+		viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+			override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+		})
 
 		return v
 	}
@@ -56,6 +56,12 @@ class NotePageFragment : Fragment() {
 			})
 	}
 
+
+	override fun onBackPressed(): Boolean {
+
+		return false
+	}
+
 	private fun updateUI(notes: List<Note>) {
 
 		val pagerAdapter = ScreenSlidePagerAdapter(notes,this)
@@ -63,18 +69,6 @@ class NotePageFragment : Fragment() {
 
 		if(startPos != -1) {
 			viewPager.setCurrentItem(startPos, false)
-//			viewPager.jumpDrawablesToCurrentState()
-//			viewPager
-		}
-	}
-
-	fun onBackPressed() {
-		if (viewPager.currentItem == 0) {
-			activity?.onBackPressed()
-		} else {
-			viewPager.currentItem = viewPager.currentItem - 1
-
-
 		}
 	}
 
@@ -97,10 +91,10 @@ class NotePageFragment : Fragment() {
 
 		private const val ARG_NOTE_INDEX: String = "note_index"
 
-		fun newInstance(index: Int): NotePageFragment {
+		fun newInstance(index: Int): NoteViewPagerFragment {
 
 			val args = Bundle().apply { putSerializable(ARG_NOTE_INDEX, index) }
-			return NotePageFragment().apply { arguments = args }
+			return NoteViewPagerFragment().apply { arguments = args }
 		}
 	}
 }

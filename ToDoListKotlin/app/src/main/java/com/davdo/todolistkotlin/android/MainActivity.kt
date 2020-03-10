@@ -21,9 +21,6 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 
 	private var floatingActionButton : FloatingActionButton? = null
 
-	private var mNoteListFragment : NoteListFragment? = null
-	private var mNoteFragment : NoteFragment? = null
-
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
@@ -37,33 +34,32 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 		floatingActionButton = findViewById(R.id.fab_activity_main)
 
 		floatingActionButton?.setOnClickListener {
-			openEditNoteFragment()
+			openNewNoteFragment()
 		}
 
 		var frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
 
 		if(frag == null) {
-			//mNoteListFragment = NoteListFragment()
-
-			mNoteListFragment = NoteListFragment()
-			frag = mNoteListFragment
-
-//			frag = NotePageFragment()
-
-
-			supportFragmentManager.beginTransaction().add(R.id.fragment_container, frag!!).commit()
+			frag = NoteListFragment()
+			supportFragmentManager.beginTransaction().add(R.id.fragment_container, frag).commit()
 		}
 	}
 
 	override fun onNoteSelected(noteID: UUID, position: Int) {
-		openNoteFragment(position)
+//		openNoteFragment(position)
+		openNoteFragment(noteID)
 	}
 
 	override fun onBackPressed() {
 
-		val prompted: Boolean? = mNoteFragment?.onBackPressed()
+		val frag : Fragment? = supportFragmentManager.findFragmentById(R.id.fragment_container)
+		var interrupt: Boolean? = false
 
-		if(prompted != true) {
+		if(frag is BackPressedListener) {
+			interrupt = (frag as BackPressedListener).onBackPressed()
+		}
+
+		if(interrupt != true) {
 			super.onBackPressed()
 			setShowBackHome(false)
 			floatingActionButton?.show()
@@ -86,32 +82,27 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 		mActionbar?.setDisplayShowHomeEnabled(show)
 	}
 
-	private fun openEditNoteFragment() {
-
-		mNoteFragment = NoteFragment()
-
-		supportFragmentManager.beginTransaction()
-			.replace(R.id.fragment_container, mNoteFragment!!)
-			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-			.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-			.addToBackStack(null)
-			.commit()
-
-		setShowBackHome(true)
-		mAppBar?.setExpanded(true, true)
-		floatingActionButton?.hide()
+	private fun openNewNoteFragment() {
+		val frag = NoteFragment()
+		openFragment(frag)
 	}
 
 	private fun openNoteFragment(position: Int) {
 
-//		mNoteFragment = if(noteID != null) NoteFragment.newInstance(noteID)
-//		else NoteFragment()
-		val frag = NotePageFragment.newInstance(position)
+		val frag = NoteViewPagerFragment.newInstance(position)
+		openFragment(frag)
+	}
 
+	private fun openNoteFragment(noteID: UUID) {
+		val frag = NoteFragment.newInstance(noteID)
+		openFragment(frag)
+	}
+
+	private fun openFragment(frag: Fragment) {
 		supportFragmentManager.beginTransaction()
 			.replace(R.id.fragment_container, frag)
-//			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//			.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+			.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+			.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
 			.addToBackStack(null)
 			.commit()
 
