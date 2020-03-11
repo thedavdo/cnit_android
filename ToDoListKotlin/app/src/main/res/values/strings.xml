@@ -5,6 +5,12 @@
 
     <string name="hint_note_title">Enter a title for the note.</string>
 
+    <string name="note_string_finished">finished</string>
+    <string name="note_string_unfinished">unfinished</string>
+
+    <string name="note_string_base">%s is due on %s. It is currently %s.</string>
+
+    <string name="menu_button_share">Share</string>
     <string name="menu_button_delete">Delete Note</string>
     <string name="menu_button_save">Save</string>
 

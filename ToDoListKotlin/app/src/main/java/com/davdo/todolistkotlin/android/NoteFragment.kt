@@ -3,10 +3,10 @@ package com.davdo.todolistkotlin.android
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.davdo.todolistkotlin.R
 import com.davdo.todolistkotlin.db.Note
 import androidx.lifecycle.Observer
+import java.text.DateFormat
 import java.util.*
 
 
@@ -83,6 +84,27 @@ class NoteFragment : Fragment(), BackPressedListener {
 		if(item.itemId == R.id.menu_button_delete_note) {
 			mConfirmDelete?.show()
 		}
+		else if(item.itemId == R.id.menu_button_share_note) {
+
+			val intent = Intent(Intent.ACTION_SEND)
+
+			var baseMsg = getString(R.string.note_string_base)
+
+			val titleStr = mNote?.title ?: "<no title>"
+			val dateStr = DateFormat.getDateInstance(DateFormat.MEDIUM).format(mNote!!.date)//--DateFormat.format(DATE_FORMAT, mNote?.date).toString()
+			val finishedStr = if(mNote?.done == true) getString(R.string.note_string_finished)
+			else getString(R.string.note_string_unfinished)
+
+			baseMsg = String.format(baseMsg, titleStr, dateStr, finishedStr)
+
+			intent.apply {
+				type = "text/pain"
+				putExtra(Intent.EXTRA_TEXT, baseMsg)
+				putExtra(Intent.EXTRA_SUBJECT, "extra subject")
+			}
+
+			startActivity(intent)
+		}
 		else if(item.itemId == R.id.menu_button_save_note) {
 			doSave()
 			activity?.onBackPressed()
@@ -143,7 +165,9 @@ class NoteFragment : Fragment(), BackPressedListener {
 
 		mTitleField?.setText(mNote?.title)
 
-		mDateTextView?.text = (mNote?.date.toString())
+		mNote?.let {
+			mDateTextView?.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(it.date)
+		}
 
 		mDoneCheckbox?.isChecked = mNote?.done ?: false
 		mChangeDate = mNote?.date?.time
@@ -162,7 +186,7 @@ class NoteFragment : Fragment(), BackPressedListener {
 			cal[Calendar.DAY_OF_MONTH] = dayOfMonth
 
 			mChangeDate = cal.time.time
-			mDateTextView?.text = mNote?.date.toString()
+			mDateTextView?.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(mChangeDate)
 		}
 
 		mDateTextView?.setOnClickListener {
@@ -193,14 +217,14 @@ class NoteFragment : Fragment(), BackPressedListener {
 		return false
 	}
 
-	fun isChangesMade(): Boolean {
+	private fun isChangesMade(): Boolean {
 
 		var changed = false
 
-		if(mNote != null) {
-			if(!mTitleField?.text?.toString().equals(mNote?.title)) changed = true
-			if(mDoneCheckbox?.isChecked != mNote?.done) changed = true
-			if(mChangeDate != mNote?.date?.time) changed = true
+		mNote?.let {
+			if(!mTitleField?.text?.toString().equals(it.title)) changed = true
+			if(mDoneCheckbox?.isChecked != it.done) changed = true
+			if(mChangeDate != it.date.time) changed = true
 		}
 
 		return changed
@@ -208,13 +232,13 @@ class NoteFragment : Fragment(), BackPressedListener {
 
 	private fun doSave() {
 
-		if(mNote != null) {
-			mNote?.title = mTitleField?.text.toString()
-			mNote?.done = mDoneCheckbox?.isChecked ?: mNote?.done!!
-			mNote?.date?.time = mChangeDate ?: mNote?.date?.time!!
+		mNote?.let {
+			it.title = mTitleField?.text.toString()
+			it.done = mDoneCheckbox?.isChecked ?: it.done
+			it.date.time = mChangeDate ?: it.date.time
 
-			if(mNewNote) noteListViewModel.addNote(mNote!!)
-			else noteDetailViewModel.updateNote(mNote!!)
+			if(mNewNote) noteListViewModel.addNote(it)
+			else noteDetailViewModel.updateNote(it)
 		}
 	}
 
@@ -222,7 +246,11 @@ class NoteFragment : Fragment(), BackPressedListener {
 		mTitleField?.setText(mNote?.title)
 
 		mChangeDate = mNote?.date?.time
-		mDateTextView?.text = mNote?.date.toString()
+
+		mNote?.let {
+			mDateTextView?.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(it.date)
+		}
+
 		mDoneCheckbox?.isChecked = mNote?.done ?: false
 
 		mTitleField?.jumpDrawablesToCurrentState()

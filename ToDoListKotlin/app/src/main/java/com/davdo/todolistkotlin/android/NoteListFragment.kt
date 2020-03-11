@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.davdo.todolistkotlin.R
 import com.davdo.todolistkotlin.db.Note
+import java.text.DateFormat
 import java.util.*
 
 
@@ -91,7 +92,7 @@ class NoteListFragment : Fragment() {
 		fun bind(newNote: Note) {
 			note = newNote
 			titleTextView.text = note.title
-			dateTextView.text = note.date.toString()
+			dateTextView.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(note.date)
 			displayDoneImage.visibility = if(note.done) View.VISIBLE else View.INVISIBLE
 		}
 
