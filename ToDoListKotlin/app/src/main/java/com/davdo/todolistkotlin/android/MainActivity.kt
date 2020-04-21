@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 	}
 
 	override fun onNoteSelected(noteID: UUID, position: Int) {
-//		openNoteFragment(position)
-		openNoteFragment(noteID)
+		openNoteFragment(position)
+//		openNoteFragment(noteID)
 	}
 
 	override fun onBackPressed() {
