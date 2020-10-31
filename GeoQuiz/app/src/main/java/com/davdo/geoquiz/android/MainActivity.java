@@ -3,9 +3,7 @@ package com.davdo.geoquiz.android;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-//import androidx.navigation.NavController;
-//import androidx.navigation.Navigation;
-//import androidx.navigation.ui.AppBarConfiguration;
+
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,7 +17,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.davdo.geoquiz.src.Question;
 import com.davdo.geoquiz.src.Quiz;
@@ -30,9 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int CHEAT_REQUEST_CODE = 0;
 
-    private static final String TAG = "MainActivity";
-    public static final String QUIZ_INDEX = "quiz_obj";
     public static final String QUESTION_INDEX = "question_obj";
+
+    private final String TAG = "MainActivity";
+    public final String QUIZ_INDEX = "quiz_obj";
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -239,10 +237,6 @@ public class MainActivity extends AppCompatActivity {
         pauseButtonInput();
     }
 
-    public void clearResult() {
-        mAnswerResult.setText("");
-    }
-
     public void updateQuestionDisplay() {
 
         int index = mQuizObj.getQuestionIndex();
@@ -306,6 +300,10 @@ public class MainActivity extends AppCompatActivity {
 
         mScoreDisplay.setText(String.format(getString(R.string.text_score), mQuizObj.getScore()));
         mScoreDisplay.setTextColor(colorRef);
+    }
+
+    public void clearResult() {
+        mAnswerResult.setText("");
     }
 
     public void displayResult() {

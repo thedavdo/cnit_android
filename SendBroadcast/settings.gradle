@@ -1,2 +1,2 @@
 rootProject.name='SendBroadcast'
-include ':app'
+include ':app_broadcaster'

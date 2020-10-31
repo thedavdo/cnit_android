@@ -272,8 +272,6 @@ class MainActivity : AppCompatActivity() {
     private fun updateScore() {
 
         val colorRef: Int = when {
-//            (mQuizObj.getScore() == 0) -> Color.BLACK
-//            (mQuizObj.getScore() < 0) -> ResourcesCompat.getColor(resources, R.color.base_wrong, null)
             (mQuizObj.score == 0) -> Color.BLACK
             (mQuizObj.score < 0) -> ResourcesCompat.getColor(resources, R.color.base_wrong, null)
             else -> Color.GREEN

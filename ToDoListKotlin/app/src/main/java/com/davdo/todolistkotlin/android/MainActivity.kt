@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity(), NoteListFragment.Callbacks {
 	}
 
 	override fun onNoteSelected(noteID: UUID, position: Int) {
-		openNoteFragment(position)
+
+		openNoteFragment(position) // Swiping enabled notes
 //		openNoteFragment(noteID)
 	}
 

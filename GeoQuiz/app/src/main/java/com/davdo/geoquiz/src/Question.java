@@ -17,11 +17,11 @@ public class Question implements Parcelable {
         mUserAnswer = 0;
     }
 
-    protected Question(Parcel in) {
-        mTextResId = in.readInt();
-        mCorrectAnswer = (in.readByte() != 0);
-        mUserAnswer = in.readInt();
-        mUserCheated = (in.readByte() != 0);
+    protected Question(Parcel arrive) {
+        mTextResId = arrive.readInt();
+        mCorrectAnswer = (arrive.readByte() != 0);
+        mUserAnswer = arrive.readInt();
+        mUserCheated = (arrive.readByte() != 0);
     }
 
     @Override
